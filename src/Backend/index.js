@@ -1,0 +1,26 @@
+// Database connection url 
+const connection = require('./Components/Connection/DB_Connections');
+// Database connection function 
+connection();
+
+const express = require('express');
+const app = express();
+
+// Middleware to send post request
+app.use(express.json())
+
+app.get('/', (req, res) => {
+    res.send("Please route to correct page.Have a Good Day.")
+})
+// Available routes 
+app.use('/home/faculty', require('./Components/Routes/User'));
+app.use('/home/faculty/book', require('./Components/Routes/Book'));
+app.use('/home/faculty/journal', require('./Components/Routes/Journal'));
+app.use('/home/faculty/conference', require('./Components/Routes/Conference'));
+
+
+
+app.listen(3000, () => {
+    console.log('Listening at Localhost:3000')
+})
+
