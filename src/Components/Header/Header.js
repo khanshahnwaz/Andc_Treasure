@@ -12,7 +12,7 @@ const Header = () => {
         <ul className='font-xl flex  space-x-5'>
         <Link to='/'><li className='hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>Home</li></Link>
           <li>Contact</li>
-          <li>About</li>
+          <Link to='/about'><li className='hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>About</li></Link>
 
           <Link to='/login'><li><button className='bg-[#7e22ce] text-white rounded-2xl py-1 px-3  hover:opacity-50'>Login</button></li></Link>
           <Link to='/signUp'><li><button className='bg-[#7e22ce] text-white  rounded-2xl  py-1 px-3 hover:opacity-50'>SignUp</button></li></Link>
