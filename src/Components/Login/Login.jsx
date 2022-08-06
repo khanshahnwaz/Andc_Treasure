@@ -1,8 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import remove   from '../SignUp/remove.png'
 
 const Login=()=>{
+    const navigate=useNavigate();
+    const navigateToHome=()=>{
+        navigate('/');
+     }
+    document.addEventListener('mouseup', function(e) {
+        var container = document.getElementById('container');
+        if (!container.contains(e.target)) {
+            // container.style.display = 'none';
+            navigate('/')
+        }
+        
+    });
     return (
-        <div className="flex relative top-[100px] left-[15%] h-[50%] bg-white rounded-lg shadow-md p-10 w-[60%]">
+        <div id='container' className="flex absolute top-[100px] left-[18%]  bg-white rounded-lg shadow-2xl p-10 w-[60%] z-50">
             {/* left division */}
             <div className="h-[700px] bg-[#7e22ce] w-[350px] border-white rounded-lg shadow-lg ">
                 <p className="text-left text-base font-bold text-white pl-10 mt-4">Andc_Treasure</p>
@@ -14,6 +27,7 @@ const Login=()=>{
             <div className="bg-white h-[700px] w-[500px] ">
                 <div className='mt-5 p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Login</p>
                 <p className='mt-2 text-sm tracking-wide text-left font-semibold'>Don't have an account? <Link to='/signUp'><span className="text-[#7e22c3]">Register</span></Link></p></div>
+                <img src={remove} alt='remove' className='float-right relative -top-60 -right-32 hover:opacity-10' onClick={navigateToHome}/>
                 <div className='-mt-8 p-10 '>
                     <form>
                 

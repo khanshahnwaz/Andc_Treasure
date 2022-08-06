@@ -32,7 +32,7 @@ const About=()=>{
                 <div >
                 <h2 className='text-3xl font-semibold text-left tracking-tightest '>Folders</h2></div>
                 <div className='flex flex-grow justify-end'>
-                <button className='bg-[#7e22c3] text-white py-1 px-3 rounded-xl '>Add +</button></div>
+                <button className='bg-[#7e22c3] text-white py-1 px-3 rounded-xl hover:opacity-50'>Add +</button></div>
             </div>
             <div className='flex mt-2'>
                <Card color='bg-yellow-300 w-[33%] h-60 rounded-2xl px-3 ' pub='Books'/>

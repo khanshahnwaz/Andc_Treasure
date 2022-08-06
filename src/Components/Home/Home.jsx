@@ -7,7 +7,7 @@ import secured from './secured.png'
 
 const Home = () => {
   return (
-    <div className='h-screen px-20 w-screen mt-10'>
+    <div className='h-screen px-20 w-screen mt-10 z-0'>
     <div className='flex justify-evenly '>
       <div className=''><p className='text-6xl font-bold tracking-widest text-left'>Making <img src={line} alt='line' className='inline-block h-8 bg-'></img><br/> Everybody Feel <br/> Valued At Work.</p>
       <p className='text-base tracking-tight text-gray-500 pt-10 text-left'>With our publication management application,you can save your publications and be<br/> awarded in future.</p>
