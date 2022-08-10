@@ -1,6 +1,7 @@
 import React from 'react'
 import home from './home.png';
 import { Link } from "react-router-dom";
+
 const Header = () => {
   return (
     <div className='flex flex-wrap  p-5 sticky z-10 top-0  bg-opacity-100  bg-gradient-to-r from-[#e9f1fc] to -[#f4f5fc]'>
@@ -11,11 +12,15 @@ const Header = () => {
       <div className='flex justify-end flex-grow '>
         <ul className='font-xl flex  space-x-5'>
         <Link to='/'><li className='hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>Home</li></Link>
-          <li>Contact</li>
-          <Link to='/about'><li className='hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>About</li></Link>
-
-          <Link to='/login'><li><button className='bg-[#7e22ce] text-white rounded-2xl py-1 px-3  hover:opacity-50'>Login</button></li></Link>
-          <Link to='/signUp'><li><button className='bg-[#7e22ce] text-white  rounded-2xl  py-1 px-3 hover:opacity-50'>SignUp</button></li></Link>
+        <Link to='/contactUs'><li className='hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>ContactUs</li></Link>
+          
+        {localStorage.getItem('token')?<><Link to='/profile'><li className='hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>Profile</li></Link>
+        
+        <Link to='/login'><li><button className='bg-[#7e22ce] text-white rounded-2xl py-1 px-3  hover:opacity-50'>LogOut</button></li></Link></>: 
+        
+        <><Link to='/login'><li><button className='bg-[#7e22ce] text-white rounded-2xl py-1 px-3  hover:opacity-50'>Login</button></li></Link>
+          <Link to='/signUp'><li><button className='bg-[#7e22ce] text-white  rounded-2xl  py-1 px-3 hover:opacity-50'>SignUp</button></li></Link></>}
+         
 
         </ul>
       </div>

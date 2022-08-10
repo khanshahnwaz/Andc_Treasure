@@ -6,6 +6,7 @@ import Footer from './Components/Footer/Footer';
 import UserProfile from './Components/UserProfile/UserProfile';
 import Routing from './Components/Routes/Routing';
 function App() {
+  // localStorage.setItem('token','this is me')
   return (
     <div className="App">
       <Routing/>

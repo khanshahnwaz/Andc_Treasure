@@ -1,6 +1,7 @@
 import remove   from './remove.png'
 import {Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import {useFormik} from 'formik'
 const SignUp=()=>{
     const navigate=useNavigate();
     const navigateToHome=()=>{
@@ -14,6 +15,42 @@ const SignUp=()=>{
         }
         
     });
+
+
+    // Formik library
+    const formik=useFormik({
+        initialValues:{
+            name:'',
+            email:'',
+            department:'',
+            designation:'',
+            password:'',
+            confirmPassword:''
+        },
+        validate:values=>{
+            const errors={};
+            if(!values.name){
+                errors.name='Required'
+            }
+            if(!values.email){
+                errors.email='Required'
+            }
+            if(!values.department){
+                errors.department='Required'
+            }
+            if(!values.designation){
+                errors.designation='Required'
+            }
+            if(!values.password){
+                errors.password='Required'
+            }
+            if(!values.confirmPassword){
+                errors.confirmPassword='Required'
+            }
+            return errors;
+        }
+    })
+    console.log("errors arre",formik.errors)
     return (
         <div id='container'  className="flex absolute top-[100px] left-[18%]  bg-white rounded-lg shadow-2xl p-10 w-[60%] z-40 ">
             {/* left division */}
@@ -31,10 +68,16 @@ const SignUp=()=>{
                 </div>
                 <img src={remove} alt='remove' className='float-right relative -top-60 -right-32 hover:opacity-10' onClick={navigateToHome}/>
                 <div className='-mt-8 p-10 '>
-                    <form>
+                    {/* Form section  */}
+                   
+                    <form onSubmit={formik.handleSubmit}>
                  <label htmlFor='name' className='float-left text-[#7e22ce] font-bold' >Name</label><br/>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='name'></input>
-                 <br/><br/>
+                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='name' onChange={formik.handleChange} value={formik.values.name}></input>
+                 {formik.errors.name?<span className='text-red-400 text-left'>*{formik.errors.name}</span>:null}
+                 <br/>
+                 
+                <br/>
+                
                  <label htmlFor='email' className='float-left text-[#7e22ce] font-bold' >Email</label><br/>
                  <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='email'></input>
                  <br/><br/>
@@ -52,11 +95,11 @@ const SignUp=()=>{
                  <br/><br/>
                  <label htmlFor='designation' className='float-left text-[#7e22ce] font-bold' >Designation</label><br/>
                  <div className='inline-block rounded border-2 border-[#7e22c3] float-left mt-1 py-1 px-5 mr-4'>
-                 <input type="radio" id="Professor" name="designation" value="Professor" className='rounded border-2 border-[#7e22c3] float-left mt-1'/>
-<label htmlFor="Professor" className='float-left mr-2 text-[#7e22ce] font-bold'>Professor</label></div>
+                 <input type="radio" id="Professor" name="designation" value="professor" className='rounded border-2 border-[#7e22c3] float-left mt-1'/>
+<label htmlFor="professor" className='float-left mr-2 text-[#7e22ce] font-bold'>Professor</label></div>
 <div className='inline-block rounded border-2 border-[#7e22c3] float-left mt-1 py-1 px-5'>
-<input type="radio" id="As. Professor" name="designation" value="As. Professor" className='rounded border-4 border-[#7e22c3] float-left mt-1'/>
-<label htmlFor="As. Professor" className='float-left text-[#7e22ce] font-bold'>As. Professor</label></div>
+<input type="radio" id="As. Professor" name="designation" value="asProfessor" className='rounded border-4 border-[#7e22c3] float-left mt-1'/>
+<label htmlFor="asProfessor" className='float-left text-[#7e22ce] font-bold'>As. Professor</label></div>
 
                  <br/><br/>
                  <label htmlFor='password' className='float-left text-[#7e22ce] font-bold' >Password</label><br/>
@@ -67,6 +110,7 @@ const SignUp=()=>{
                  <br/><br/>
                  <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded '>Submit</button>
                  </form>
+                 
                 </div>
             </div>
         </div>
