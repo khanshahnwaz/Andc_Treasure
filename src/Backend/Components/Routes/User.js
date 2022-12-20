@@ -9,24 +9,27 @@ const secretKey = "This is Shahnwaz Khan";
 
 
 // Route 1: Register new user . Login not required
-router.post('/', async (req, res) => {
-    console.log("Hi I am here.")
-    const check = await user.findOne({ Email: req.body.Email });
+router.post('/signUp', async (req, res) => {
+    // console.log("Hi I am here.")
+    console.log("Requested data is",req.body)
+
+    const check = await user.findOne({ Email: req.body.email });
     if (check) {
-        return res.status(400).json({ Error: "Email already exists." })
+        console.log("Email already exists.")
+        return res.json({ Message: "Email already exists.",status:400 })
     }
     // Encrypting password to keep safe 
     // generate salt 
     const salt = await bcrypt.genSalt(10);
     // generate hash
-    const hashedPassword = await bcrypt.hash(req.body.Password, salt);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
 
     const create = await user.create({
-        Name: req.body.Name,
-        Email: req.body.Email,
-        Department: req.body.Department,
-        Designation: req.body.Designation,
+        Name: req.body.name,
+        Email: req.body.email,
+        Department: req.body.department,
+        Designation: req.body.designation,
         Password: hashedPassword
     })
     if (create) {
@@ -36,36 +39,37 @@ router.post('/', async (req, res) => {
             }
         }
         const token = jwt.sign(payLoad, secretKey);
-        return res.status(200).json(token);
-    } else return res.status(401).json({ Error: "Internal server error." })
+        return res.status(201).json({Message:"Account created successfully.",token:token,status:201});
+    } else return res.status(401).json({Message: "Internal server error." })
 
 })
 
 
 // Router 2 : Login register user . No login required
 router.post('/login', async (req, res) => {
-    
-        const { Email, Password } = req.body;
-        const checkEmail = await user.findOne({ Email: Email });
-        if (!checkEmail) {
-            return res.status(404).json({ Error: "Account not found.Please register first." })
+
+    const { Email, Password } = req.body;
+    const checkEmail = await user.findOne({ Email: Email });
+    if (!checkEmail) {
+        return res.status(404).json({ Message: "Account not found." })
+    }
+    const oldPassword = await user.findOne({ Email: Email });
+    // console.log(oldPassword)
+    const checkPassword =  await bcrypt.compare(Password, oldPassword.Password);
+    if (!checkPassword) {
+        console.log("Password matched.")
+        return res.status(401).json({ Message: "Wrong password detected.",status:401 })
+    }else console.log("Password matched.")
+    const payLoad = {
+        user: {
+            id: oldPassword._id
         }
-        const oldPassword = await user.findOne({ Email: Email });
-        // console.log(oldPassword)
-        const checkPassword =  bcrypt.compare(Password, oldPassword.Password);
-        if (!checkPassword) {
-            return res.status(402).json({ Error: "Wrong Password detected." })
-        }
-        const payLoad = {
-            user: {
-                id: oldPassword._id
-            }
-        }
+    }
 
 
-        const token = jwt.sign(payLoad, secretKey);
-        // localStorage.setItem('token', token)
-        res.json({ Success: "Welcome to andc_treasure.", token })
-   
+    const token = jwt.sign(payLoad, secretKey);
+    // localStorage.setItem('token', token)
+    return res.json({ Message: "Welcome to andc_treasure.", token,status:200 })
+
 })
 module.exports = router;

@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div className='flex absolute -bottom-64 inset-x-0'>
     <div className='flex justify-start space-x-3 p-4 text-center items-center '>
-        <h2 className='text-[#7e22c3] text-2xl tracking-wide font-bold '>Shahnwaz Khan</h2>
+        <h2 className='text-[#7e22c3] sm:text-2xl text-xl tracking-wide font-bold '>Shahnwaz Khan</h2>
         <p className='text-center -tracking-tighter'>Copyright &#169; ShahnwazKhanProjects
         </p>
     </div>

@@ -1,13 +1,16 @@
 // Database connection url 
 const connection = require('./Components/Connection/DB_Connections');
+
 // Database connection function 
 connection();
 
 const express = require('express');
+const cors=require('cors')
 const app = express();
 
 // Middleware to send post request
 app.use(express.json())
+app.use(cors())
 
 app.get('/', (req, res) => {
     res.send("Please route to correct page.Have a Good Day.")
