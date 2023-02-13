@@ -5,7 +5,7 @@ const connection = require('./Components/Connection/DB_Connections');
 connection();
 
 const express = require('express');
-const cors=require('cors')
+const cors = require('cors')
 const app = express();
 
 // Middleware to send post request
@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 // Available routes 
 app.use('/home/faculty', require('./Components/Routes/User'));
 app.use('/home/faculty/book', require('./Components/Routes/Book'));
+app.use('/home/faculty/bookChapter', require('./Components/Routes/BookChapter'));
+
 app.use('/home/faculty/journal', require('./Components/Routes/Journal'));
 app.use('/home/faculty/conference', require('./Components/Routes/Conference'));
 

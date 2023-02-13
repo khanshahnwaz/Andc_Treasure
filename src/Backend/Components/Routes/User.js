@@ -5,8 +5,8 @@ const router = app.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // to generate tokens 
 const secretKey = "This is Shahnwaz Khan";
-
-
+const {Auth}=require('two-step-auth')
+const nodemailer=require('nodemailer')
 
 // Route 1: Register new user . Login not required
 router.post('/signUp', async (req, res) => {
@@ -28,6 +28,7 @@ router.post('/signUp', async (req, res) => {
     const create = await user.create({
         Name: req.body.name,
         Email: req.body.email,
+        Phone:req.body.phone,
         Department: req.body.department,
         Designation: req.body.designation,
         Password: hashedPassword
@@ -57,9 +58,9 @@ router.post('/login', async (req, res) => {
     // console.log(oldPassword)
     const checkPassword =  await bcrypt.compare(Password, oldPassword.Password);
     if (!checkPassword) {
-        console.log("Password matched.")
+        console.log("Password did not match.")
         return res.status(401).json({ Message: "Wrong password detected.",status:401 })
-    }else console.log("Password matched.")
+    }else console.log("Password matched. Welcome to andc_treasure.")
     const payLoad = {
         user: {
             id: oldPassword._id
@@ -71,5 +72,38 @@ router.post('/login', async (req, res) => {
     // localStorage.setItem('token', token)
     return res.json({ Message: "Welcome to andc_treasure.", token,status:200 })
 
+})
+
+// Route 3: Forgot Password
+router.put('/forgotPassword',async(req,res)=>{
+    const mail=req.body;
+    try{
+    // const email=await Auth(mail,"andc_treasure");
+    // console.log("Requested mail id for forgot password ",email.mail)
+    // console.log("Sent otp is",email.otp)
+
+    const transport=nodemailer.createTransport({
+        service:"gmail",
+        auth:{
+            user:"avengershahnwaz@gmail.com",
+            pass:"khanbhai"
+        }
+    })
+    const mailoptions={
+        from:"avengershahnwaz@gmail.com",
+        to:"avengershahnwaz@gmail.com",
+        subject:"OTP verification",
+        text:"Your otp is 0786"
+    }
+    transport.sendMail(mailoptions, function(error, info){
+        if (error) {
+          console.log("nodemailer error ",error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    }catch(err){
+        console.log("Server error ",err)
+    }
 })
 module.exports = router;

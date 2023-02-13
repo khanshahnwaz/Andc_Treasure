@@ -1,4 +1,4 @@
-import React,{useContext} from 'react'
+import React,{useContext,useState,useEffect} from 'react'
 import home from './home.png';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
@@ -7,9 +7,24 @@ import { PublicationContext } from '../../Context/PublicationState';
 
 const Header = () => {
   console.log("I am in header component.")
+  const[scrollState,setScrollState]=useState('bg-gradient-to-r from-[#e9f1fc] to -[#f4f5fc]')
+  let listener=null;
+  useEffect(() => {
+		listener = document.addEventListener("scroll", (e) => {
+			var scrolled = document.scrollingElement.scrollTop;
+			if (scrolled >= 120) {
+				setScrollState("bg-white");
+			} else {
+				setScrollState("bg-gradient-to-r from-[#e9f1fc] to -[#f4f5fc]");
+			}
+		});
+		return () => {
+			document.removeEventListener("scroll", listener);
+		};
+	}, [scrollState]);
   const context=useContext(PublicationContext)
   return (
-    <div className='flex flex-wrap  p-5 sticky z-10 top-0    bg-gradient-to-r from-[#e9f1fc] to -[#f4f5fc]'>
+    <div className={`flex flex-wrap   p-5 sticky z-10 top-0 ${scrollState}`}>
       <Confirmtion message='logOut' url='/'/>
       <div className='flex justify-start space-x-7 '>
         <img alt="Home" className='' src={home} />

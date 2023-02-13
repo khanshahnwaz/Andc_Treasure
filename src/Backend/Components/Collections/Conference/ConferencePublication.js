@@ -5,16 +5,22 @@ const ConferencePublications=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'faculty'
     },
-    CID:{
+    PID:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'conference'  
+        ref:'publicationType'  
     },
-    Year:Date,
-    CoAuthors:{
-        type:Array
+    PaperTitle:{
+        type:String
     },
-    Proceedings:String,
-    PaperTitle:String
+    CorrespondingAuthor:{
+        type:String
+    },
+    FirstAuthor:String,
+    PaperPresented:String,
+    National:String,
+    Place:String,
+    CoAuthors:Array
+  
 })
 const conferencePublication=mongoose.model('conferencePublication',ConferencePublications);
 module.exports=conferencePublication;

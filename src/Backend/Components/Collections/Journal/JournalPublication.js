@@ -5,16 +5,22 @@ const JournalPublications=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'faculty'
     },
-    JID:{
+    PID:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'journal'  
+        ref:'publicationType'  
     },
-    Year:Date,
+    Title:String,
+    ISSN:String,
+    Volume:String,
+    CorrespondingAuthor:{
+        type:String
+    },
+    FirstAuthor:String,
     CoAuthors:{
         type:Array
-    },
-    Volume:String,
-    PaperTitle:String
+    }
+    
+   
 })
 const journalPublication=mongoose.model('journalPublication',JournalPublications);
 module.exports=journalPublication;

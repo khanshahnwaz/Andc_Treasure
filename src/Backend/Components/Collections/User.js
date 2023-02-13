@@ -8,6 +8,9 @@ const User= new mongoose.Schema({
         type:String,
         unique:true
     },
+    Phone:{
+        type:String,
+    },
     Department:{
         type:String
     },

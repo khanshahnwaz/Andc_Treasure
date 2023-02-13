@@ -1,15 +1,23 @@
 const mongoose= require('mongoose');
 
 const BookPublications=new mongoose.Schema({
+    PID:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'publicationType'
+    },
     FID:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'faculty'
     },
-    BID:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'book'  
+    Title:{
+        type:String
     },
-    Year:Date,
+    Editor:{
+        type:String
+    },
+    Area:{
+        type:String
+    },
     CoAuthors:Array,
     Edition:String
 })

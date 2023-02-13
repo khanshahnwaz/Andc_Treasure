@@ -1,151 +1,142 @@
-const journal = require('../Collections/Journal/Journal');
-const journalPublication= require('../Collections/Journal/JournalPublication')
-const app = require('express');
-const router = app.Router();
+const publicationType=require('../Collections/PublicationType/PublicationType')
+const journal=require('../Collections/Journal/JournalPublication')
+const app=require('express')
+const router=app.Router();
+const checkUser=require('../LoginMiddleware/checkUser')
 
-const checkUser = require('../LoginMiddleware/checkUser');
-
-// Route 1 : Add Journals 
-router.post('/addJournal', checkUser, async (req, res) => {
-    const { Name, Year, CoAuthors, Publisher, ISSN, Volume,PaperTitle } = req.body;
+// CREATE journal
+router.post('/addJournal',checkUser,async(req,res)=>{
     const FID = req.user.id;
-    
-    try {
 
-        //   Check if this journal Id is present in the database 
-        let checkJid=await journal.findOne({ISSN:ISSN});
-        if(!checkJid){
-            const journalData=await journal.create({
-                Name:Name,
-                ISSN:ISSN,
-                Publisher:Publisher
-            })
-        }
-     checkJid=await journal.findOne({ISSN:ISSN});
+    //   find if user is adding publication or chapter
+    const{Name, Year,Publisher,ISPN}=req.body;
 
-        // Add publication details 
-        // FID and Volume together should be unqiuely identify each row 
-        const checkPublication = await journalPublication.findOne({FID:FID,Volume:Volume});
-        if(checkPublication){
-            console.log("Duplicated journal entry.")
-            return res.json({Message:"Duplicate entry detected.Please check If you have already entered these details."})
+     // extract chapter information
+     const{Title,NewTitle,ISSN,Volume,CorrespondingAuthor,FirstAuthor,CoAuthors}=req.body;
+
+      // check if publication is already added in publication type or not 
+    // flag to track if the publication type is new or old
+    let pubFlag=true;
+    let PID;
+
+    if(await publicationType.findOne({ISPN:ISPN})){
+        console.log("This publication already exists.")
+        PID=await publicationType.findOne({ISPN:ISPN})
+        pubFlag=false;
+     }
+
+    //   False means, publication type already exists and we have the PID
+       if(!pubFlag){ 
+        if(await journal.findOne({PID:PID,FID:FID,Title:Title})){
+            return res.json({"Message":"Duplicate entry.Title already exists."})
         }
-        const journalData=await journalPublication.create({
-            FID:FID,
-            JID:checkJid._id,
-            Year:new Date(`${Year}`),
-            CoAuthors:CoAuthors.split(" "),
-            Volume:Volume,
-            PaperTitle:PaperTitle
-        })
-        return res.status(201).json({Message:"Journal added.",status:201});
-    } catch (err) {
-       return res.status(400).json({Message: "Internal server error.", err });
     }
-})
 
+    if(pubFlag){ // if publication type is new then create new entry else ignore
+        console.log("creating new publication type.")
+        PID= await publicationType.create(
+        {
+           Type:"JOURNAL",
+           Name:Name,
+           Year:new Date(`${Year}`),
+           Publisher:Publisher,
+           ISPN:ISPN 
+        }
+    )}
+    console.log("PID is ",PID)
+    
+    await journal.create(
+        {
+            PID: PID,
+            FID: FID,
+            Title:Title,
+            ISSN:ISSN,
+            Volume:Volume,
+            CorrespondingAuthor: CorrespondingAuthor,
+            FirstAuthor: FirstAuthor,
+            CoAuthors: CoAuthors
 
-// Route 2: Read Journals 
-router.get('/readJournals',checkUser,async (req,res)=>{
-    // First I need to fetch journal Id written by the faculty from journalPublication
-    const FID=req.user.id; 
-    const JID=await journalPublication.find({FID:FID}).select('JID');
-    // Find journals from journal table with the fetched id 
-    const Journal=await journalPublication.find({FID:FID}).populate('JID').populate('FID');
-    console.log(Journal)
+        }
+    )
+    return res.json({"Message":"Journal added successfully."})
 
-    // Extract required data 
-    const result = Journal.map((value,index)=>{
+}
+)
+
+// READ bookChapters
+
+router.get('/readJournals',checkUser,async(req,res)=>{
+    const FID=req.user.id;
+    // Match FID and type==Chapter and fetch PID
+    const PID=await publicationType.find({FID:FID,Type:"JOURNAL"}).select('_id');
+    const data=await journal.find({FID:FID,PID:PID}).populate('PID');
+    const result=data.map((item,i)=>{
         return {
-            Name:Journal[index].JID.Name,
-            ID:Journal[index].JID.ISSN,
-            Publisher:Journal[index].JID.Publisher,
-            CoAuthors:Journal[index].CoAuthors,
-            Edition:Journal[index].Volume,
-            Year:Journal[index].Year.getFullYear()
-        };
+            JournalName: data[i].PID.Name,
+            Title: data[i].Title,
+            ISSN: data[i].PID.ISPN,
+            Publisher: data[i].PID.Publisher,
+            Volume:data[i].Volume,
+            CorrespondingAuthor: data[i].CorrespondingAuthor,
+            FirstAuthor: data[i].FirstAuthor,
+            CoAuthors: data[i].CoAuthors,
+            Year:data[i].PID.Year.getFullYear()
+        }
+
     })
     return res.json(result);
 })
 
-// Route 3 : Delete journal 
-router.delete('/deleteJournal', checkUser, async (req, res) => {
-    // TO delete any journal, we need to check if that bid is pointing to some other Volume in Publication table which is not intented to delete. In this case, delete the Volume only not the journal from the journal table. If the journal has only one Volume then delete the journal as well if it's only Volume is being deleted.
-    //   console.log("This is me.")
-    const { ISSN, Volume } = req.body.deleteData;
-    const JID=await journal.findOne({ISSN:ISSN}).select('_id')
-    const FID = req.user.id;
-    //    check if this journal is there in publications
-    const publication = await journalPublication.findOne({ JID: JID, Volume: Volume })
-    if (!publication) {
-        return res.json({ Message: "journal not found." })
-    }
-
-    // check if the requested user has wriiten this publication
-    if (publication.FID != FID) {
-        return res.json({ Message: "Unauthorized." })
-    }
-    // check if another Volume of this journal is in database or not
-    // if not then delete it's details from journal table as well 
-    //  else delete from journalPublication only.
-    const countBid = await journalPublication.find({ JID: JID });
-    if (countBid.length == 1) {
-        console.log("No another copy of this journal is found.");
-        try{
-        await journalPublication.deleteOne({Volume:Volume})
-        await journal.deleteOne({CID:CID})
-        }catch(err){
-            console.log("Error while deleting the journal",err)
-            return res.json({Message:"Internal server error."})
-        }
-        
-    }else{
-        try{
-            await journalPublication.deleteOne({Volume:Volume})
-        }catch(err){
-            console.log("Error while deleting the journal",err)
-            return res.json({Message:"Internal server error."}) 
-        }
-    }
-    return res.json({ Message:"Publication deleted successfully.",status:200 })
-
+// UPDATE journal
+router.put('/updateJournal',checkUser,async(req,res)=>{
+    const FID=req.user.id;
+    let { ISPN, Title, NewTitle,ISSN,Volume, CorrespondingAuthor, FirstAuthor,  CoAuthors } = req.body;
+    // find the PID of requested chapter
+    const PID=await publicationType.findOne({ISPN:ISPN}).select('_id');
+    
+     try{
+        await journal.updateOne(
+            { PID: PID, FID: FID, Title: Title }, {
+            Title:NewTitle,
+            Volume:Volume,
+            ISSN:ISSN,
+            CorrespondingAuthor: CorrespondingAuthor,
+            FirstAuthor: FirstAuthor,
+            CoAuthors: CoAuthors
+        })
+}catch(err){
+    return res.json(err)
+}
+NewTitle?Title=NewTitle:Title;
+const chapter=await journal.findOne({PID:PID,FID:FID,Title:Title});
+return res.json(chapter)
 })
 
 
-// Route 4:Update the journal Publicaiton
-router.put('/editJournal', checkUser, async (req, res) => {
-    try {
-        const newData = req.body;
-        console.log("Data for editJournal is",newData)
-        // first fetch the bookId from the book collection
-        const JID = await journal.findOne({ISSN: newData.Jid }).select('_id')
-        if (!JID) {
-            return res.status(204).json({ Message: "Not found.", status: 204 })
-        }
-        console.log("Requested journal is", JID)
-        console.log("Requested faculty is", req.user.id)
-        console.log("Requested Volume is", newData.OldVolume)
-        console.log("updated year is", newData.Year)
-        // check if the new volume already exists.If it is so then don't add it
-        const checkVol=await journalPublication.findOne({Volume:newData.Volume});
-        if(checkVol){
-            return res.json({Message:"New volume already exists."})
-        }
-        // now upate the requested publication by matching the old Volume
-        const result = await journalPublication.updateOne({ JID: JID._id, Volume: newData.OldVolume, FID: req.user.id }, {
-            Year: new Date(`${newData.Year}`),
-            Volume: newData.Volume,
-            CoAuthors: newData.CoAuthors,
-            Volume:newData.Volume
-        });
-        console.log(result)
-        if (result.modifiedCount != 0)
-            return res.status(200).json({ Message: "Edited Successfully", status: 200 })
-        else return res.json({ Message: "Couldn't find the requested publication." })
-    } catch (err) {
-        return res.status(400).json({ Message: "Internal server error.", err, status: 400 });
+// DELETE Journals
+router.delete('/deleteJournal',checkUser,async(req,res)=>{
+    const FID=req.user.id;
+    const {ISPN,Title}=req.body;
+    console.log(req.body)
+    const PID=await publicationType.findOne({ISPN:ISPN}).select('_id');
+    console.log(PID)
+   // if PID does not exist or has already been deleted.
+    if(!PID){
+        return res.json({"Message":"Publication not found."})
     }
-
+   
+    try{
+        // if chapter does not exist or has already been deleted.
+        if(!await journal.findOne({FID:FID,PID:PID,Title:Title}))
+        {
+            return res.json({"Message":"Journal not found."})
+        }
+    
+        await journal.deleteOne({FID:FID,PID:PID,Title:Title});
+    }catch(err){
+        console.log("Generated error is",err)
+        return res.json(err)
+    }
+    return res.json({"Message":"Journal deleted successfully."})
 })
-
-module.exports = router;
+module.exports=router;

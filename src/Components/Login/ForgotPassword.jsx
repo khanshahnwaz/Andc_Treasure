@@ -1,34 +1,15 @@
-import { Link,useNavigate } from "react-router-dom";
-import remove   from '../Assets/remove.png'
 import {useFormik} from 'formik'
-import { useContext } from "react";
-import { PublicationContext } from "../../Context/PublicationState";
-import Error from "../Modals/Error";
-import Successful from "../Modals/Successful";
-const Login=()=>{
-    const context=useContext(PublicationContext);
-    
+import { Link,useNavigate } from "react-router-dom";
+import {Auth} from 'two-step-auth';
+const ForgotPassword=()=>{
+
     const navigate=useNavigate();
     const navigateToHome=()=>{
         navigate('/');
      }
-
-    //  close the form on clicking anywhere 
-    // document.addEventListener('mouseup', function(e) {
-    //     var container = document.getElementById('container');
-    //     if (!container.contains(e.target)) {
-    //         container.style.display = 'none';
-    //         navigate('/')
-    //     }  
-    // });
-
-    
-    // Formik library
     const formik=useFormik({
         initialValues:{
             email:'',
-            password:''
-           
         },
         validate:values=>{
             const errors={};
@@ -38,9 +19,7 @@ const Login=()=>{
             }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
                 errors.email = '*Invalid email';
             }
-            if(!values.password){
-                errors.password='*Required'
-            }
+           
            
             return errors;
         },
@@ -49,34 +28,34 @@ const Login=()=>{
                 
                 Email:values.email,
                
-                Password:values.password
+               
             }
+            const auth=await Auth(email,'Andc_treasure')
+            console.log("mail id",auth.mail)
+            console.log("sent otp",auth.otp)
             // console.log("sent data",JSON.stringify(data))
-            const response =await fetch('http://localhost:3001/home/faculty/login',{
-                method:'POST',
-                headers:{
-                    'Content-Type':"application/json"
-                  },
-                body:JSON.stringify(data)
-            })
-            const result=await response.json();
-            console.log(result.Message)
-            // result.status===200?localStorage.setItem({token:result.token}):null
-            if(result.status===200){
-                localStorage.setItem('token',result.token)
-                context.setSuccessMessage(result.Message)
-            }else {
-                context.setErrorMessage(result.Message)
-            }
-            // navigateToHome();
+            // const response =await fetch('http://localhost:3001/home/faculty/login',{
+            //     method:'POST',
+            //     headers:{
+            //         'Content-Type':"application/json"
+            //       },
+            //     body:JSON.stringify(data)
+            // })
+            // const result=await response.json();
+            // console.log(result.Message)
+            // // result.status===200?localStorage.setItem({token:result.token}):null
+            // if(result.status===200){
+            //     localStorage.setItem('token',result.token)
+            //     context.setSuccessMessage(result.Message)
+            // }else {
+            //     context.setErrorMessage(result.Message)
+            // }
+            // // navigateToHome();
         }
     })
-    return (
+    return(
         <>
-       {/* <!-- Overlay element --> */}
-       <Error url='/login'/>
-       <Successful url='/'/>
-    <div className="fixed  z-30 w-screen h-screen inset-0 bg-gray-700 bg-opacity-60"></div>
+        <div className="fixed  z-30 w-screen h-screen inset-0 bg-gray-700 bg-opacity-60"></div>
     
     <div id='container'  className=" flex fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-40  bg-white rounded-lg shadow-2xl p-10 w-[60%]  "> 
     <img src={remove} alt='remove' className='float-right fixed -traslate-x-1/2 -translate-y-1/2 -right-5 -top-2 hover:opacity-10' onClick={navigateToHome}/>
@@ -89,7 +68,7 @@ const Login=()=>{
         </div>
         {/* right division */}
         <div className="bg-white h-[700px] w-[500px] ">
-            <div className='mt-5 p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Login</p>
+            <div className='mt-5 p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Forgot Password</p>
             <p className='mt-2 text-sm tracking-wide text-left font-semibold'>Don't have an account?<Link to='/signUp'><span className="text-[#7e22c3]">Register</span></Link></p>
             
             </div>
@@ -105,13 +84,6 @@ const Login=()=>{
            
             
              <br/><br/>
-             <label htmlFor='password' className='float-left text-[#7e22ce] font-bold' >Password</label><br/>
-             <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='password' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} ></input>
-             {formik.errors.password && formik.touched.password?<span className='text-red-400 text-left'>{formik.errors.password}</span>:null}
-             <br/><br/>
-           
-           {/* Forgot password section */}
-           <p className='mb-2 text-sm tracking-wide text-left font-semibold text-[#7e22c3] cursor-pointer hover:opacity-50'>Forgot your password?</p>
 
              <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded '>Submit</button>
              </form>
@@ -119,8 +91,7 @@ const Login=()=>{
             </div>
         </div>
     </div>
-    </>
+        </>
     );
 }
-
-export default Login;
+export default ForgotPassword;
