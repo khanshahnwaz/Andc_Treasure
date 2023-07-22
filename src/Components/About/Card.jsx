@@ -18,9 +18,10 @@ const Card = (props) => {
                         </div>
 
                         <div className='py-3 pb-6'><h3 className='text-3xl tracking-wider font-bold text-left'>1250 files</h3></div>
-
-                        <Link to={props.path}><div className='flex justify-between   rounded-xl  cursor-pointer hover:opacity-10'><h4 className='font-bold '>View</h4>
+                        
+                        <Link to={props.path}><div className='flex justify-between tracking-wider   rounded-xl  cursor-pointer hover:opacity-10'><h4 className='font-bold '>View</h4>
                         <h5 className='text-2xl '>&#x2192;</h5></div></Link>
+                        
                 </div>
   )
 }

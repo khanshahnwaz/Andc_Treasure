@@ -8,27 +8,28 @@ const checkUser=require('../LoginMiddleware/checkUser')
 router.post('/addJournal',checkUser,async(req,res)=>{
     const FID = req.user.id;
 
-    //   find if user is adding publication or chapter
-    const{Name, Year,Publisher,ISPN}=req.body;
+    //   Extract publication details
+    const{Name,Year,Publisher,ISSN}=req.body;
 
-     // extract chapter information
-     const{Title,NewTitle,ISSN,Volume,CorrespondingAuthor,FirstAuthor,CoAuthors}=req.body;
+     // extract Journal details
+     const{Title,Volume,CorrespondingAuthor,FirstAuthor,CoAuthors}=req.body;
 
       // check if publication is already added in publication type or not 
     // flag to track if the publication type is new or old
     let pubFlag=true;
     let PID;
 
-    if(await publicationType.findOne({ISPN:ISPN})){
+    if(await publicationType.findOne({ISPN:ISSN,Type:'JOURNAL'})){
         console.log("This publication already exists.")
-        PID=await publicationType.findOne({ISPN:ISPN})
+        PID=await publicationType.findOne({ISPN:ISSN,Type:'JOURNAL'})
         pubFlag=false;
      }
 
     //   False means, publication type already exists and we have the PID
-       if(!pubFlag){ 
+       if(!pubFlag)
+    { 
         if(await journal.findOne({PID:PID,FID:FID,Title:Title})){
-            return res.json({"Message":"Duplicate entry.Title already exists."})
+            return res.json({"Message":"Duplicate entry! Title already exists!"})
         }
     }
 
@@ -40,11 +41,11 @@ router.post('/addJournal',checkUser,async(req,res)=>{
            Name:Name,
            Year:new Date(`${Year}`),
            Publisher:Publisher,
-           ISPN:ISPN 
+           ISPN:ISSN 
         }
     )}
     console.log("PID is ",PID)
-    
+    try{
     await journal.create(
         {
             PID: PID,
@@ -58,7 +59,10 @@ router.post('/addJournal',checkUser,async(req,res)=>{
 
         }
     )
-    return res.json({"Message":"Journal added successfully."})
+    }catch(err){
+        return res.json({"Message":"Internal Server Error!"})
+    }
+    return res.json({"Message":"Journal added successfully.","Status":201})
 
 }
 )
@@ -73,14 +77,17 @@ router.get('/readJournals',checkUser,async(req,res)=>{
     const result=data.map((item,i)=>{
         return {
             JournalName: data[i].PID.Name,
-            Title: data[i].Title,
-            ISSN: data[i].PID.ISPN,
+            Year:data[i].PID.Year.getFullYear(),
             Publisher: data[i].PID.Publisher,
+            ISSN: data[i].PID.ISPN,
+            Title: data[i].Title,
+            
+            
             Volume:data[i].Volume,
             CorrespondingAuthor: data[i].CorrespondingAuthor,
             FirstAuthor: data[i].FirstAuthor,
             CoAuthors: data[i].CoAuthors,
-            Year:data[i].PID.Year.getFullYear()
+            
         }
 
     })
@@ -90,10 +97,21 @@ router.get('/readJournals',checkUser,async(req,res)=>{
 // UPDATE journal
 router.put('/updateJournal',checkUser,async(req,res)=>{
     const FID=req.user.id;
-    let { ISPN, Title, NewTitle,ISSN,Volume, CorrespondingAuthor, FirstAuthor,  CoAuthors } = req.body;
-    // find the PID of requested chapter
-    const PID=await publicationType.findOne({ISPN:ISPN}).select('_id');
-    
+    let {Title, NewTitle,ISSN,Volume, CorrespondingAuthor, FirstAuthor,  CoAuthors } = req.body;
+     // find the PID of requested chapter
+     const PID = await publicationType.findOne({ FID:FID, ISPN: ISSN, Type: "JOURNAL" }).select('_id');
+
+     if (!PID) {
+         return res.json({ "Message": "ISSN not found.", "Status": 404 })
+     }
+
+      // check if the new title is duplicate or not 
+    console.log("New Title: ", NewTitle, " Old Title: ", Title)
+    if (NewTitle != Title) {
+        if (await journal.findOne({ PID: PID, FID: FID,Title: NewTitle })) {
+            return res.json({ "Message": "Duplicate Journal Title detected!" })
+        }
+    }
      try{
         await journal.updateOne(
             { PID: PID, FID: FID, Title: Title }, {
@@ -105,8 +123,10 @@ router.put('/updateJournal',checkUser,async(req,res)=>{
             CoAuthors: CoAuthors
         })
 }catch(err){
-    return res.json(err)
+    return res.json({"Message":"Interval Server Error!"})
 }
+return res.json({"Message":"Journal updated successfully.","Status":202})
+// If title has been updated then find the publication using new title.
 NewTitle?Title=NewTitle:Title;
 const chapter=await journal.findOne({PID:PID,FID:FID,Title:Title});
 return res.json(chapter)
@@ -116,9 +136,10 @@ return res.json(chapter)
 // DELETE Journals
 router.delete('/deleteJournal',checkUser,async(req,res)=>{
     const FID=req.user.id;
-    const {ISPN,Title}=req.body;
+    const ISSN=req.body.deleteData.ISSN;
+    const Title=req.body.deleteData.Title;
     console.log(req.body)
-    const PID=await publicationType.findOne({ISPN:ISPN}).select('_id');
+    const PID=await publicationType.findOne({ISPN:ISSN,"Type":"JOURNAL"}).select('_id');
     console.log(PID)
    // if PID does not exist or has already been deleted.
     if(!PID){
@@ -135,8 +156,8 @@ router.delete('/deleteJournal',checkUser,async(req,res)=>{
         await journal.deleteOne({FID:FID,PID:PID,Title:Title});
     }catch(err){
         console.log("Generated error is",err)
-        return res.json(err)
+        return res.json({"Message":"Internal server error."})
     }
-    return res.json({"Message":"Journal deleted successfully."})
+    return res.json({"Message":"Journal deleted successfully.","Status":200})
 })
 module.exports=router;

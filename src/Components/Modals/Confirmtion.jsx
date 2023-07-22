@@ -7,7 +7,7 @@ import Successful from './Successful';
 import Error from './Error';
 const Confirmtion = (props) => {
     const context=useContext(PublicationContext);
-    console.log("In confirmation box warninh message is",context.warningMessage)
+    // console.log("In confirmation box warninh message is",context.warningMessage)
     const navigate=useNavigate();
     // function that will navigate user on the same page if NO delete/edit option is selected
     const navigation=()=>{
@@ -16,6 +16,7 @@ const Confirmtion = (props) => {
         context.setCallDeleteBook(false);
             context.setCallDeleteJournal(false);
             context.setCallDeleteConference(false);
+            context.setCallDeleteChapter(false);
 
     }
 
@@ -38,11 +39,12 @@ const Confirmtion = (props) => {
             })
             // console.log("Hello am I running.")
             const result=await response.json();
-            if(result.status==200){
+            if(result.Status==202){
                 context.setSuccessMessage(result.Message)
                 console.log("Updated")
             }else 
-        {context.setErrorMessage(result.Message)
+        {
+            context.setErrorMessage(result.Message)
             console.log("not updated due to",result.Message)
                 
             }
@@ -50,7 +52,9 @@ const Confirmtion = (props) => {
 
         }// case 2: user is logging out
         else if(props.message=='logOut'){
+
             localStorage.removeItem('token')
+            context.setLoggedInName('Andc_Treasure')
             navigation()
         }
 // case 3: User is trying to delete any publication
@@ -58,12 +62,13 @@ const Confirmtion = (props) => {
             context.setCallDeleteBook(false);
             context.setCallDeleteJournal(false);
             context.setCallDeleteConference(false);
-
+            context.setCallDeleteChapter(false);
             // SET THE DELETE DATA      
-            console.log("Now I am deleting the data data",context.targetId,context.targetPublication)
+            console.log("Now I am deleting the data ",context.targetId,context.targetPublication)
             const deleteData={}
             deleteData[props.id]=context.targetId;
-            deleteData[props.pub]=context.targetPublication
+            deleteData[props.pub]=context.targetPublication;
+            console.log("Sending delete data is ",deleteData)
             const response =await fetch(`http://localhost:3001/home/faculty/${props.delUrl}`,{
                 method:'DELETE',
                 headers:{
@@ -75,7 +80,7 @@ const Confirmtion = (props) => {
             })
             // console.log("Hello am I running.")
             const result=await response.json();
-            if(result.status==200){
+            if(result.Status==200){
                 context.setSuccessMessage(result.Message)
                 console.log("Deleted")
             }else 

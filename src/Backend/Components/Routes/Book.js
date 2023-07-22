@@ -9,7 +9,7 @@ router.post('/addBook',checkUser,async(req,res)=>{
     const FID = req.user.id;
 
     //   find if user is adding publication or chapter
-    const{Name, Year,Publisher,ISPN}=req.body;
+    const{Name, Year,Publisher,ISBN}=req.body;
 
      // extract book information
      const{Title,Editor,Edition,Area,CoAuthors}=req.body;
@@ -19,9 +19,9 @@ router.post('/addBook',checkUser,async(req,res)=>{
     let pubFlag=true;
     let PID;
 
-    if(await publicationType.findOne({ISPN:ISPN})){
+    if(await publicationType.findOne({ISPN:ISBN,Type:"BOOK"})){
         console.log("This publication already exists.")
-        PID=await publicationType.findOne({ISPN:ISPN})
+        PID=await publicationType.findOne({ISPN:ISBN,Type:"BOOK"})
         pubFlag=false;
      }
 
@@ -41,7 +41,7 @@ router.post('/addBook',checkUser,async(req,res)=>{
            Name:Name,
            Year:new Date(`${Year}`),
            Publisher:Publisher,
-           ISPN:ISPN 
+           ISPN:ISBN 
         }
     )}
     console.log("PID is ",PID)
@@ -58,7 +58,7 @@ router.post('/addBook',checkUser,async(req,res)=>{
 
         }
     )
-    return res.json({"Message":"Book added successfully."})
+    return res.json({"Message":"Book added successfully.","Status":201})
 
 }
 )
@@ -68,19 +68,21 @@ router.post('/addBook',checkUser,async(req,res)=>{
 router.get('/readBooks',checkUser,async(req,res)=>{
     const FID=req.user.id;
     // Match FID and type==Book and fetch PID
-    const PID=await publicationType.find({FID:FID,Type:"CHAPTER"}).select('PID');
+    const PID=await publicationType.find({FID:FID,Type:"BOOK"}).select('PID');
     const data=await bookPublication.find({FID:FID,PID:PID}).populate('PID');
+    console.log(data)
     const result=data.map((item,i)=>{
         return {
         BookName:data[i].PID.Name,
-        BookTitle:data[i].Title,
-        Edition:data[i].Edition,
-        Publisher:data[i].PID.Publisher,
-        Editor:data[i].Editor,
-        ISBN:data[i].PID.ISPN,
         Year:data[i].PID.Year.getFullYear(),
-        CoAuthors:data[i].CoAuthors,
-        Area:data[i].Area}
+        Publisher:data[i].PID.Publisher,
+        ISBN:data[i].PID.ISPN,
+        Title:data[i].Title,
+        Editor:data[i].Editor,
+        Edition:data[i].Edition,
+        Area:data[i].Area,
+        CoAuthors:data[i].CoAuthors
+       }
 
     })
     return res.json(result);
@@ -89,12 +91,23 @@ router.get('/readBooks',checkUser,async(req,res)=>{
 // UPDATE Book
 router.put('/updateBook',checkUser,async(req,res)=>{
     const FID=req.user.id;
-    console.log(FID)
-    let {ISPN,Title,NewTitle,Edition,Editor,Area,CoAuthors}=req.body;
+    console.log('Faculty id',FID)
+    console.log("requested body is", req.body)
+    let {ISBN,Title,NewTitle,Edition,Editor,Area,CoAuthors}=req.body;
     // find the PID of requested chapter
-    const PID=await publicationType.findOne({ISPN:ISPN}).select('_id');
-    console.log(PID)
-    console.log(await bookPublication.findOne({PID:PID,FID:FID,Title:Title}))
+    const PID=await publicationType.findOne({ISPN:ISBN,Type:"BOOK"}).select('_id');
+    console.log('Pubication id',PID)
+    if(!PID){
+        return res.json({"Message":"ISBN not found.","Status":404})
+    }
+    // check if the new title is duplicate or not 
+    console.log("New Title: ",NewTitle, " Old Title: ",Title)
+    if(NewTitle!=Title){
+    if(await bookPublication.findOne({PID:PID,FID:FID,Title:NewTitle})){
+        return res.json({"Message":"Duplicate Book Title detected!"})
+    }
+}
+    console.log('Updating publication',await bookPublication.findOne({PID:PID,FID:FID,Title:Title}))
      try{
     await bookPublication.updateOne({PID:PID,FID:FID,Title:Title},{
         Title:NewTitle,
@@ -104,19 +117,22 @@ router.put('/updateBook',checkUser,async(req,res)=>{
         CoAuthors:CoAuthors
     })
 }catch(err){
-    return res.json(err)
+    return res.json({"Message":"Interval Server Error!"})
 }
 NewTitle?Title=NewTitle:Title;
 const chapter=await bookPublication.findOne({PID:PID,FID:FID,Title:Title});
-return res.json(chapter)
+return res.json({"Message":"Book Updated successfully.",Status:202})
 })
 
 
 // DELETE book
 router.delete('/deleteBook',checkUser,async(req,res)=>{
     const FID=req.user.id;
-    const {ISPN,Title}=req.body;
-    const PID=await publicationType.findOne({ISPN:ISPN}).select('_id');
+    // const {ISBN,Title}=req.body;
+    const ISBN=req.body.deleteData.ISBN;
+    const Title=req.body.deleteData.Title;
+    console.log("About to delete ISBN is",req.body)
+    const PID=await publicationType.findOne({ISPN:ISBN,"Type":"BOOK"}).select('_id');
    // if PID does not exist or has already been deleted.
     if(!PID){
         return res.json({"Message":"Publication not found."})
@@ -134,6 +150,6 @@ router.delete('/deleteBook',checkUser,async(req,res)=>{
         console.log("Generated error is",err)
         return res.json(err)
     }
-    return res.json({"Message":"Book deleted successfully."})
+    return res.json({"Message":"Book deleted successfully.","Status":200})
 })
 module.exports=router;

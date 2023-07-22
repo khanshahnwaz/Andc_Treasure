@@ -1,10 +1,13 @@
 import { Link,useNavigate } from "react-router-dom";
 import remove   from '../Assets/remove.png'
 import {useFormik} from 'formik'
-import { useContext } from "react";
+import { useContext, useEffect,useState } from "react";
 import { PublicationContext } from "../../Context/PublicationState";
 import Error from "../Modals/Error";
 import Successful from "../Modals/Successful";
+
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 const Login=()=>{
     const context=useContext(PublicationContext);
     
@@ -22,6 +25,10 @@ const Login=()=>{
     //     }  
     // });
 
+
+     // state to manage the error tooltip for every input box 
+     const[visiEmail,setViisiEmail]=useState(false);
+     const[visiPassword,setVisiPassword]=useState(false);
     
     // Formik library
     const formik=useFormik({
@@ -34,12 +41,12 @@ const Login=()=>{
             const errors={};
            
             if(!values.email){
-                errors.email='*Required'
+                errors.email='Required'
             }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-                errors.email = '*Invalid email';
+                errors.email = 'Invalid email';
             }
             if(!values.password){
-                errors.password='*Required'
+                errors.password='Required'
             }
            
             return errors;
@@ -65,12 +72,22 @@ const Login=()=>{
             if(result.status===200){
                 localStorage.setItem('token',result.token)
                 context.setSuccessMessage(result.Message)
+                context.setLoggedInName(result.name)
             }else {
                 context.setErrorMessage(result.Message)
             }
             // navigateToHome();
         }
     })
+
+    useEffect(()=>{
+        if(formik.errors.email && formik.touched.email){
+            setViisiEmail(true)
+        }else setViisiEmail(false)
+        if(formik.errors.password && formik.touched.password){
+            setVisiPassword(true)
+        }else setVisiPassword(false)
+    },[formik])
     return (
         <>
        {/* <!-- Overlay element --> */}
@@ -78,37 +95,41 @@ const Login=()=>{
        <Successful url='/'/>
     <div className="fixed  z-30 w-screen h-screen inset-0 bg-gray-700 bg-opacity-60"></div>
     
-    <div id='container'  className=" flex fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-40  bg-white rounded-lg shadow-2xl p-10 w-[60%]  "> 
-    <img src={remove} alt='remove' className='float-right fixed -traslate-x-1/2 -translate-y-1/2 -right-5 -top-2 hover:opacity-10' onClick={navigateToHome}/>
+    <div id='container'  className="flex fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-40  bg-white rounded-lg shadow-2xl p-10 md:w-[50%] w-[92%] "> 
+    <img src={remove} alt='remove' className='float-right fixed -traslate-x-1/2 -translate-y-1/2 -right-1 -top-2 hover:opacity-10 cursor-pointer' onClick={navigateToHome}/>
         {/* left division */}
-        <div className="h-[700px] bg-gradient-to-br from-[#7e22ce] to-[#a26bcd] w-[350px] border-white rounded-lg shadow-lg ">
+        <div className="h-max bg-gradient-to-br from-[#7e22ce] to-[#a26bcd]  border-white rounded-lg shadow-lg w-[350px] hidden md:block ">
             <p className="text-left text-base font-bold text-white pl-10 mt-4">Andc_Treasure</p>
             <p className="text-4xl tracking-wider text-left mt-10 p-10 text-white font-bold">Resume your <br/> journey with us</p>
             <p className="text-sm mt-2 text-left px-10 text-gray-200">Discover world best community of freelancers and business owners.</p>
             <div className=" mt-44  py-5 px-5 pb-4 mx-10 bg-[#5c1e7e] text-base font-bold  text-left text-gray-200 h-32 rounded-lg shadow-lg">Simply unbelievable! I am absolutely satisfied with my business. This is absolutely wonderful.</div>
         </div>
         {/* right division */}
-        <div className="bg-white h-[700px] w-[500px] ">
-            <div className='mt-5 p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Login</p>
+        <div className="bg-white h-full w-[100%] md:w-[50%] ">
+            <div className='mt-5 p-5 md:p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Login</p>
             <p className='mt-2 text-sm tracking-wide text-left font-semibold'>Don't have an account?<Link to='/signUp'><span className="text-[#7e22c3]">Register</span></Link></p>
             
             </div>
-            <div className='-mt-8 p-10 w-full'>
+            <div className='-mt-8 md:p-10 p-5 '>
                 {/* Form section  */}
                
                 <form onSubmit={formik.handleSubmit}>
-           
-            
+           <div className="grid gap-5">
+            <div>
              <label htmlFor='email' className='float-left text-[#7e22ce] font-bold' >Email</label><br/>
-             <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='email' onBlur={formik.handleBlur}onChange={formik.handleChange} value={formik.values.email} ></input>{formik.errors.email && formik.touched.email?<span className='text-red-400 text-left'>{formik.errors.email}</span>:null}
-             
-           
+             <Tippy visible={visiEmail} content={formik.errors.email} placement='top-end'>
+             <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='email' onBlur={formik.handleBlur}onChange={formik.handleChange} value={formik.values.email} ></input></Tippy>
+             </div>
             
-             <br/><br/>
+             
+             <div>
              <label htmlFor='password' className='float-left text-[#7e22ce] font-bold' >Password</label><br/>
-             <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='password' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} ></input>
-             {formik.errors.password && formik.touched.password?<span className='text-red-400 text-left'>{formik.errors.password}</span>:null}
-             <br/><br/>
+             <Tippy visible={visiPassword} content={formik.errors.password} placement='top-end'>
+             <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='password' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} ></input>
+             </Tippy>
+             </div>
+             </div>
+            
            
            {/* Forgot password section */}
            <p className='mb-2 text-sm tracking-wide text-left font-semibold text-[#7e22c3] cursor-pointer hover:opacity-50'>Forgot your password?</p>

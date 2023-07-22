@@ -12,7 +12,7 @@ const DeleteJournal = (props) => {
     // })
     context.setWarningMessage('delete')
   return (
-    <Confirmtion url={props.backUrl} delUrl='journal/deleteJournal' message='delete' id='ISSN' pub='Volume'/>
+    <Confirmtion url={props.backUrl} delUrl='journal/deleteJournal' message='delete' id='ISSN' pub='Title'/>
   )
   }else return null;
 }

@@ -7,6 +7,7 @@ const Successful = (props) => {
   const navigate=useNavigate();
   const navigateToDetails=()=>{
     context.setAddBook(false)
+    context.setAddChapter(false)
     context.setAddJournal(false)
     context.setAddConference(false)
     console.log(props.url)
@@ -14,6 +15,7 @@ const Successful = (props) => {
     context.setCallEditBook(false)
     context.setCallEditJournal(false)
     context.setCallEditConference(false)
+    context.setCallEditChapter(false);
 
       navigate(props.url)
   }

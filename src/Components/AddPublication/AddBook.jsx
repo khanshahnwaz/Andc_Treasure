@@ -4,62 +4,134 @@ import { useNavigate } from 'react-router-dom';
 import {useFormik} from 'formik'
 import Successful from '../Modals/Successful';
 import Error from '../Modals/Error';
-import { useContext } from 'react';
+import { useContext, useState,useEffect } from 'react';
 import { PublicationContext } from '../../Context/PublicationState';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; // optional
+
 const Add=()=>{
-    // context.setAddBook(false)
     
     const context=useContext(PublicationContext)
-    const navigate=useNavigate();
-    const navigateToHome=()=>{
+    
+    // hooks to track the visibility of tooltips
+    const[visiName,setVisiName]=useState(false)
+    const[visiYear,setVisiYear]=useState(false)
+    const[visiPublisher,setVisiPublisher]=useState(false)
+    const[visiISBN,setVisiISBN]=useState(false)
+    const[visiTitle,setVisiTitle]=useState(false)
+    const[visiEditor,setVisiEditor]=useState(false)
+    const[visiEdition,setVisiEdition]=useState(false)
+    const[visiArea,setVisiArea]=useState(false)
+    const[visiCoAuthors,setVisiCoAuthors]=useState(false)
+   
+//    hook to keep track of form section
+const[section,setSection]=useState(0);
+
+const navigateToHome=()=>{
     //    navigate('/bookDetails');
        context.setAddBook(false)
     }
-   
-   
+    const[formData,setFormData]=useState({})
+    const[data,setData]=useState({})
 
+   
+// First part of form to get data for publication type table
+const formik1=useFormik({
+    initialValues:{
+        Name:'',
+        Year:'',
+        Publisher:'',
+        ISBN:''
+    },
+    validate:values=>{
+        const errors={};
+        console.log(values.Year)
+        if(!values.Name){
+            errors.Name='Required!'
+        }else if(values.Name.length<3){
+            errors.Name='Atleast 3 characters required!'
+        }
+        else setData({...data,...values})
+        if(!values.Year){
+            errors.Year='Required!'
+        }else if(values.Year<1900 || values.Year>new Date().getFullYear()){
+            errors.Year='Invalid year!'
+        }
+        else setData({...data,...values})
+        if(!values.Publisher){
+            errors.Publisher='Required!'
+        }else if(values.Publisher.length<3){
+            errors.Publisher='Atleast 3 characters required!'
+        }
+        else setData({...data,...values})
+        if(!values.ISBN){
+            errors.ISBN='Required!'
+        }else if(values.ISBN.length<3){
+            errors.ISBN='Invalid ISBN!'
+        }
+        else setData({...data,...values})
+        // setData({values,...data})
+      return errors;
+    },
+    onSubmit:values=>{
+        // setFormData(data)
+        console.log('First form data ',data)
+        setSection(1);
+    }
+})
     // Formik library
     const formik=useFormik({
         initialValues:{
-            name:'',
-            year:'',
-            coAuthors:'',
-            isbn:'',
-            publisher:'',
-            edition:''
+           Title:'',
+           Editor:'',
+           Edition:'',
+           Area:'',
+           CoAuthors:''
         },
         validate:values=>{
             const errors={};
-            if(!values.name ){
-                errors.name='*Required'
+            if(!values.CoAuthors){
+                errors.CoAuthors='Required'
+            }else if(values.CoAuthors.length<3){
+                errors.CoAuthors='Atleast 3 characters required!'
             }
-            if(!values.year){
-                errors.year='*Required'
+            else setData({...data,...values})
+           if(!values.Area){
+            errors.Area='Required!'
+           }else if(values.Area.length<3){
+            errors.Area='Atleast 3 characters required!'
+        }
+           else setData({...data,...values})
+           if(!values.Editor){
+            errors.Editor='Required!'
+           }else if(values.Editor.length<3){
+            errors.Editor='Atleast 3 characters required!'
+        }
+           else setData({...data,...values})
+           if(!values.Title){
+            errors.Title='Required!'
+           }else if(values.Title.length<3){
+            errors.Title='Atleast 3 characters required!'
+        }
+           else setData({...data,...values})
+            if(!values.Edition){
+                errors.Edition='Required'
+            }else if(values.Edition.length<3){
+                errors.Edition='Atleast 3 characters required!'
             }
-            if(!values.coAuthors){
-                errors.coAuthors='*Required'
-            }
-            if(!values.isbn){
-                errors.isbn='*Required'
-            }
-            if(!values.publisher){
-                errors.publisher='*Required'
-            }
-            if(!values.edition){
-                errors.edition='*Required'
-            }
+            else setData({...data,...values})
             return errors;
         },
         onSubmit: async values=>{
-            const data={
-                Name:values.name,
-                Year:values.year,
-                CoAuthors:values.coAuthors,
-                ISBN:values.isbn,
-                Publisher:values.publisher,
-                Edition:values.edition
-            }
-            // console.log("sent data",JSON.stringify(data))
+            console.log("Submitted total data ",data)
+        //     const data={
+               
+        //         CoAuthors:values.CoAuthors,
+        //         ISBN:values.ISBN,
+        //         Publisher:values.Publisher,
+        //         Edition:values.Edition
+        //     }
+            console.log("sent data",JSON.stringify(data))
             const response =await fetch('http://localhost:3001/home/faculty/book/addBook',{
                 method:'POST',
                 headers:{
@@ -71,17 +143,73 @@ const Add=()=>{
             const result=await response.json();
             console.log(result)
            
-            if(result.status===200){
-               
+            if(result.Status==201){
+               console.log("Successfull")
                 context.setSuccessMessage(result.Message)
                
-            }else if(result.status===400) {
-                console.log("I am here.")
+            }else {
+                console.log("Some error occured whiled creating new book entry.")
                context.setErrorMessage(result.Message)
             }
         }
     })
     // console.log("Visited fields",formik.touched)
+// control visibility of tooltips
+useEffect(() => {
+    if (formik1.errors.Name && formik1.touched.Name) {
+        setVisiName(true);
+    } else {
+        setVisiName(false);
+    }
+    if (formik1.errors.Year && formik1.touched.Year) {
+        setVisiYear(true);
+    } else {
+        setVisiYear(false);
+    }
+
+    if (formik1.errors.Publisher && formik1.touched.Publisher) {
+        setVisiPublisher(true);
+    } else {
+        setVisiPublisher(false);
+    }
+
+    if (formik1.errors.ISBN && formik1.touched.ISBN) {
+        setVisiISBN(true);
+    } else {
+        setVisiISBN(false);
+    }
+}, [formik1]);
+
+useEffect(() => {
+    if (formik.errors.Title && formik.touched.Title) {
+        setVisiTitle(true);
+    } else {
+        setVisiTitle(false);
+    }
+    if (formik.errors.Editor && formik.touched.Editor) {
+        setVisiEditor(true);
+    } else {
+        setVisiEditor(false);
+    }
+
+    if (formik.errors.Edition && formik.touched.Edition) {
+        setVisiEdition(true);
+    } else {
+        setVisiEdition(false);
+    }
+
+    if (formik.errors.Area && formik.touched.Area) {
+        setVisiArea(true);
+    } else {
+        setVisiArea(false);
+    }
+
+    if (formik.errors.CoAuthors && formik.touched.CoAuthors) {
+        setVisiCoAuthors(true);
+    } else {
+        setVisiCoAuthors(false);
+    }
+}, [formik]);
 
     // diaglog box 
     if(context.addBook==true){
@@ -93,55 +221,132 @@ const Add=()=>{
        {/* <!-- Overlay element --> */}
     <div className="fixed  z-30 w-screen h-screen inset-0 bg-gray-900 bg-opacity-60"></div>
 
-    <div id='container'  className=" flex fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-40  bg-white rounded-lg shadow-2xl p-10 w-[60%]  "> 
-    <img src={remove} alt='remove' className='float-right fixed -traslate-x-1/2 -translate-y-1/2 -right-5 -top-2 hover:opacity-10' onClick={navigateToHome}/>
+    <div id='container'  className=" flex fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-40  bg-white rounded-lg shadow-2xl p-10 md:w-[50%] w-[92%]  "> 
+   
             {/* left division */}
-            <div className="h-[700px] bg-gradient-to-br from-[#7e22ce] to-[#a26bcd] w-[350px] border-white rounded-lg shadow-lg ">
+            <div className="h-max bg-gradient-to-br from-[#7e22ce] to-[#a26bcd]  border-white rounded-lg shadow-lg w-[350px] hidden md:block">
                 <p className="text-left text-base font-bold text-white pl-10 mt-4">Andc_Treasure</p>
                 <p className="text-4xl tracking-wider text-left mt-10 p-10 text-white font-bold">Start your <br/> journey with us</p>
                 <p className="text-sm mt-2 text-left px-10 text-gray-200">Discover world best community of freelancers and business owners.</p>
                 <div className=" mt-44  py-5 px-5 pb-4 mx-10 bg-[#5c1e7e] text-base font-bold  text-left text-gray-200 h-32 rounded-lg shadow-lg">Simply unbelievable! I am absolutely satisfied with my business. This is absolutely wonderful.</div>
             </div>
             {/* right division */}
-            <div className="bg-white h-[700px] w-[500px] ">
+            <div className="bg-white h-full w-[100%] md:w-[50%] ">
+            <img src={remove} alt='remove' className='float-right  hover:opacity-10' onClick={navigateToHome}/>
                 <div className='mt-5 p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Add Books</p>
                 <p className='mt-2 text-sm tracking-wide text-left font-semibold'>Already added book?<Link to='/bookDetails'><span className="text-[#7e22c3]">Return</span></Link></p>
                 
                 </div>
                 <div className='-mt-8 p-10 '>
                     {/* Form section  */}
-                   
-                    <form onSubmit={formik.handleSubmit}>
-                 <label htmlFor='name' className='float-left text-[#7e22ce] font-bold' >Name</label><br/>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='name' onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur}></input>
-                 {formik.errors.name && formik.touched.name?<span className='text-red-400 text-left'>{formik.errors.name}</span>:null}
-                 <br/>
-                 
-                <br/>
+                   {
+                    section==0?(
+                        <form onSubmit={formik1.handleSubmit}>
+                             <label htmlFor='Name' className='float-left text-[#7e22ce] font-bold' >Name</label><br/>
+                             <Tippy
+                 visible={visiName}
+                 placement='right'
+                 content={formik1.errors.Name}
+                >
+                 <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Name' onChange={formik1.handleChange} value={formik1.values.Name} onBlur={formik1.handleBlur}></input>
+                </Tippy>
+                 <br/><br/>
                 
-                 <label htmlFor='year' className='float-left text-[#7e22ce] font-bold' >Year</label><br/>
-                 <input type='number' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='year' onBlur={formik.handleBlur}onChange={formik.handleChange} value={formik.values.year} ></input>{formik.errors.year && formik.touched.year?<span className='text-red-400 text-left'>{formik.errors.year}</span>:null}
+                 <label htmlFor='Year' className='float-left text-[#7e22ce] font-bold' >Year</label><br/>
+                 <Tippy
+                 visible={visiYear}
+                 placement='right'
+                 content={formik1.errors.Year}
+                >
+                 <input type='number' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Year' onBlur={formik1.handleBlur}onChange={formik1.handleChange} value={formik1.values.Year} ></input>
+                 </Tippy>
+               
                  
                  <br/><br/>
-                 <label htmlFor='publisher' className='float-left text-[#7e22ce] font-bold' >Publisher</label><br/>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='publisher' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.publisher} ></input>
-                 {formik.errors.publisher && formik.touched.publisher?<span className='text-red-400 text-left'>{formik.errors.publisher}</span>:null}
+                 <label htmlFor='Publisher' className='float-left text-[#7e22ce] font-bold' >Publisher</label><br/>
+                 <Tippy
+                 visible={visiPublisher}
+                 placement='right'
+                 content={formik1.errors.Publisher}
+                >
+                 <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Publisher' onBlur={formik1.handleBlur} onChange={formik1.handleChange} value={formik1.values.Publisher} ></input>
+                 </Tippy>
+
                  <br/><br/>
-                 <label htmlFor='isbn' className='float-left text-[#7e22ce] font-bold' >ISBN</label><br/>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='isbn' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.isbn} ></input>
-                 {formik.errors.isbn && formik.touched.isbn?<span className='text-red-400 text-left'>{formik.errors.isbn}</span>:null}
+                 <label htmlFor='ISBN' className='float-left text-[#7e22ce] font-bold' >ISBN</label><br/>
+                 <Tippy
+                 visible={visiISBN}
+                 placement='right'
+                 content={formik1.errors.ISBN}
+                >
+                 <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='ISBN' onBlur={formik1.handleBlur} onChange={formik1.handleChange} value={formik1.values.ISBN} ></input>
+                </Tippy>
                  <br/><br/>
-                 <label htmlFor='edition' className='float-left text-[#7e22ce] font-bold' >Edition</label><br/>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='edition' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.edition} ></input>
-                 {formik.errors.edition && formik.touched.edition?<span className='text-red-400 text-left'>{formik.errors.edition}</span>:null}
-                 <br/><br/>
-                 <label htmlFor='coAuthors' className='float-left text-[#7e22ce] font-bold' >CoAuthors</label><br/>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='coAuthors' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.coAuthors} ></input>
-                 {formik.errors.coAuthors && formik.touched.coAuthors?<span className='text-red-400 text-left'>{formik.errors.coAuthors}</span>:null}
-                 <br/><br/>
-                 <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded '>Submit</button>
-                 </form>
-                 
+                 <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded my-2' >Next</button>
+                        </form>
+                    ): <form onSubmit={formik.handleSubmit}>
+                    
+                   
+                   
+                   
+                    <label htmlFor='Title' className='float-left text-[#7e22ce] font-bold' >Title</label><br/>
+                    <Tippy
+                 visible={visiTitle}
+                 placement='right'
+                 content={formik.errors.Title}
+                >
+                    <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Title' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.Title} ></input>
+                  </Tippy>
+                    <br/><br/>
+
+                    <label htmlFor='Edition' className='float-left text-[#7e22ce] font-bold' >Edition</label><br/>
+                    <Tippy
+                 visible={visiEdition}
+                 placement='right'
+                 content={formik.errors.Edition}
+                >
+                    <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Edition' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.Edition} ></input>
+                </Tippy>
+                    <br/><br/>
+                  
+                    <label htmlFor='Editor' className='float-left text-[#7e22ce] font-bold' >Editor</label><br/>
+                    <Tippy
+                 visible={visiEditor}
+                 placement='right'
+                 content={formik.errors.Editor}
+                >
+                    <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Editor' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.Editor} ></input>
+                   </Tippy>
+                    <br/><br/>
+
+                    <label htmlFor='Area' className='float-left text-[#7e22ce] font-bold' >Area</label><br/>
+                    <Tippy
+                 visible={visiArea}
+                 placement='right'
+                 content={formik.errors.Area}
+                >
+                    <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='Area' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.Area} ></input>
+                 </Tippy>
+                    <br/><br/>
+
+                    <label htmlFor='CoAuthors' className='float-left text-[#7e22ce] font-bold' >CoAuthors</label><br/>
+                    <Tippy
+                 visible={visiCoAuthors}
+                 placement='right'
+                 content={formik.errors.CoAuthors}
+                >
+                    <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='CoAuthors' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.CoAuthors} ></input>
+                   </Tippy>
+                    <br/><br/>
+
+                   <div className='grid grid-cols-2 gap-x-2 '>
+                   <button type='button' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded my-2 w-full' onClick={()=>setSection(0)}>Back</button>
+                    <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 my-2 rounded w-full'>Submit</button>
+                    </div> 
+                    </form>
+                    
+                   }
+                    
                 </div>
             </div>
         </div>

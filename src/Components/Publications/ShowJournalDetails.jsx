@@ -4,9 +4,13 @@ import Right from '../About/Right';
 import Publication from '../Publications/Publication'
 const ShowJournalDetails = () => {
           // editUrl prop is used to pass in detailedPublication component 
+      const details=['Name','Year','Publisher','ISSN','Title','Volume','Corr.Author','FirstAuthor','CoAuthors']
   return (
-    <div className="border-8 border-black rounded-xl m-2 flex">
-        <Left/><Publication url='journal/readJournals' editUrl='journal/editJournal' backUrl='/journalDetails' name='Journals' publisher='Publisher' id='ISSN' edition='Volume'/><Right/>
+    <div className="  m-2 mx-auto  w-[95vw] md:w-[80vw] min-h-screen">
+        {/* <Left/> */}
+        <Publication url='journal/readJournals' name='Journals' editUrl='journal/editJournal' backUrl='/journalDetails'
+        data={details}/>
+        {/* <Right/> */}
     </div>
   )
 }

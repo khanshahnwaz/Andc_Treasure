@@ -13,7 +13,7 @@ const DeleteConference = (props) => {
     context.setWarningMessage('delete')
 
   return (
-    <Confirmtion url={props.backUrl} delUrl='conference/deleteConference' message='delete' id='CID' pub='Proceeding'/>
+    <Confirmtion url={props.backUrl} delUrl='conference/deleteConference' message='delete' id='ISSN' pub='PaperTitle'/>
   )
   }else return null;
 }

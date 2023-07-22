@@ -59,7 +59,7 @@ const DetailedPublication=(props)=>{
         
 
     // }
-    console.log("I am in detailed publication.")
+    // console.log("I am in detailed publication.")
     if(context.callDetailedPublication==true){
 
         const data=Object.keys(props.data).map((key,i)=>{
@@ -102,7 +102,7 @@ const DetailedPublication=(props)=>{
         </div>
         </>
     )}else {
-        console.log("DetailedPublication signal is false",context.callDetailedPublication)
+        // console.log("DetailedPublication signal is false",context.callDetailedPublication)
         return null;
     }
 }

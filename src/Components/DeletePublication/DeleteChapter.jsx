@@ -2,20 +2,20 @@ import React, { useContext } from 'react'
 import { PublicationContext } from '../../Context/PublicationState'
 import Confirmtion from '../Modals/Confirmtion'
 
-const DeleteBook = (props) => {
+const DeleteChapter = (props) => {
   const context=useContext(PublicationContext)
   
-  if(context.callDeleteBook!=false){
-    console.log("I am in callDeleteBook component.")
+  if(context.callDeleteChapter!=false){
+    console.log("I am in callDeleteChapter component.")
     // context.setEditData({
     //   ISBN:context.targetId,
     //   Edition:context.targetPublication
     // })
     context.setWarningMessage('delete')
   return (
-    <Confirmtion url={props.backUrl} delUrl='book/deleteBook' message='delete' id='ISBN' pub='Title'/>
+    <Confirmtion url={props.backUrl} delUrl='BookChapter/deleteChapter' message='delete' id='ISBN' pub='Title'/>
   )
 }else return null;
 }
 
-export default DeleteBook;
+export default DeleteChapter;

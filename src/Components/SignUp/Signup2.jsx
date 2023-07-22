@@ -5,7 +5,14 @@ import 'tippy.js/dist/tippy.css';
 import { useEffect,useContext } from 'react';
 import { PublicationContext } from '../../Context/PublicationState';
 import { useNavigate } from 'react-router-dom';
-const Signup2 = () => {
+import Error from '../Modals/Error';
+import Successful from '../Modals/Successful';
+const Signup2 = (props) => {
+    console.log("i entered in second form.")
+    const [data,setData]=useState(props.values)
+    useEffect(()=>{
+        console.log("values submitted in both the form", data)
+    },[data])
     const context=useContext(PublicationContext)
     const navigate=useNavigate();
     const navigateToHome=()=>{
@@ -40,29 +47,26 @@ const Signup2 = () => {
 
         },
         onSubmit:async values=>{
-            console.log("Values submitted ",values)
-            // const data={
-            //     phone:values.phone,
-            //     email:values.email,
-            //     password:values.password
-            // }
-            //  console.log("sent data",JSON.stringify(data))
-            // const response =await fetch('http://localhost:3001/home/faculty/signUp',{
-            //     method:'POST',
-            //     headers:{
-            //         'Content-Type':"application/json"
-            //       },
-            //     body:JSON.stringify(data)
-            // })
-            // const result=await response.json();
-            // console.log(result.Message)
-            // // result.status===200?localStorage.setItem({token:result.token}):null
-            // if(result.status===201){
-            //     localStorage.setItem('token',result.token)
-            //     context.setSuccessMessage(result.Message)
-            // }else{
-            //     context.setErrorMessage(result.Message)
-            // }
+            const temp={...data,...values};
+            
+          
+            const response =await fetch('http://localhost:3001/home/faculty/signUp',{
+                method:'POST',
+                headers:{
+                    'Content-Type':"application/json"
+                  },
+                body:JSON.stringify(temp)
+            })
+            const result=await response.json();
+            console.log(result.Message)
+            // result.status===200?localStorage.setItem({token:result.token}):null
+            if(result.status===201){
+                localStorage.setItem('token',result.token)
+                context.setSuccessMessage(result.Message)
+                context.setLoggedInName(result.name)
+            }else{
+                context.setErrorMessage(result.Message)
+            }
             // navigateToHome();
         }
     })
@@ -83,20 +87,23 @@ const Signup2 = () => {
     },[form])
   return (
     <>
+    <Error url='/signUp'/>
+        <Successful url='/'/>
     <form onSubmit={form.handleSubmit}>
-
+    <div className='wrapperDiv grid gap-3'>
+            <div>
         {/* name input */}
-        <label htmlFor='name' className='float-left text-[#7e22ce] font-bold' >Name</label><br/>
+        <label htmlFor='name' className='float-left text-[#7e22ce] font-bold' >Name</label>
                 <Tippy visible={visiName} content={form.errors.name} placement='top-end'>
-                 <input type='text' className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' name='name' onChange={form.handleChange} value={form.values.name} onBlur={form.handleBlur}></input>
+                 <input type='text' className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full' name='name' onChange={form.handleChange} value={form.values.name} onBlur={form.handleBlur}></input>
                  </Tippy>
-                 <br/>
-                <br/>
+                 </div>
 
+             <div>
                 {/* department input  */}
                 <label htmlFor='department' className='float-left text-[#7e22ce] font-bold' >Department</label><br/>
                 <Tippy visible={visiDepartment} content={form.errors.department} placement='top-end'>
-                 <select name="department" className='rounded border-2 border-[#7e22c3] float-left mt-1 w-[70%]' onBlur={form.handleBlur} onChange={form.handleChange} value={form.values.department}  >
+                 <select name="department" className='bg-white border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2 w-full md:text-base text-sm' onBlur={form.handleBlur} onChange={form.handleChange} value={form.values.department}  >
                  <option value="">Select</option>
 
   <option value="Computer Science">Computer Science</option>
@@ -109,21 +116,28 @@ const Signup2 = () => {
   <option value="Electronics">Electronics</option>
 </select>
 </Tippy>
-                 <br/><br/>
+</div>
+ {/* designation */}
+ <div>
+                 <label htmlFor='designation' className='float-left text-[#7e22ce] font-bold' >Designation</label></div>
+<div className='flex gap-x-3'>
+                
+                 <div className='flex gap-x-2 rounded border-2 border-[#7e22c3] float-left  h-max w-full py-2 justify-center'>
+                 <input type="radio" id="Professor" name="designation" className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-3 ' onBlur={form.handleBlur} onChange={form.handleChange} value='Professor' />
+                
+<label htmlFor="professor" className='float-left md:mr-2 text-[#7e22ce] font-bold'>Professor</label>
+                 </div>
 
-                 {/* designation */}
-                 <label htmlFor='designation' className='float-left text-[#7e22ce] font-bold' >Designation</label><br/>
-                 <div className='inline-block rounded border-2 border-[#7e22c3] float-left mt-1 py-1 px-5 mr-4'>
-                 <input type="radio" id="Professor" name="designation" className='rounded border-2 border-[#7e22c3] float-left mt-1' onBlur={form.handleBlur} onChange={form.handleChange} value='Professor' />
-<label htmlFor="professor" className='float-left mr-2 text-[#7e22ce] font-bold'>Professor</label></div>
+              
 <Tippy visible={visiDesignation} content={form.errors.designation} placement='right'>
-<div className='inline-block rounded border-2 border-[#7e22c3] float-left mt-1 py-1 px-5 mb-5'>
-<input type="radio" id="As. Professor" name="designation"  className='rounded border-4 border-[#7e22c3] float-left mt-1' onBlur={form.handleBlur} onChange={form.handleChange} value='As.Prfessor' />
-<label htmlFor="asProfessor" className='float-left text-[#7e22ce] font-bold'>As. Professor</label></div>
-</Tippy>
+<div className='flex w-full gap-x-2 rounded border-2 border-[#7e22c3] float-left h-max py-2 justify-center'>
+<input type="radio" id="As. Professor" name="designation"  className='border-2 border-[#bd8ce2] rounded-lg float-left mt-1 py-2' onBlur={form.handleBlur} onChange={form.handleChange} value='As.Prfessor' />
+<label htmlFor="asProfessor" className='float-left text-[#7e22ce] font-bold'>As. Professor</label></div></Tippy>
 
 
-                 <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded '>Create Account</button>
+</div>
+</div>
+<button type='submit' className='mt-3 font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 px-5 rounded '>Create Account</button>
     </form>
     </>
   )

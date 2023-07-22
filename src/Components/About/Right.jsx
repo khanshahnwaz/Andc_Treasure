@@ -1,15 +1,21 @@
-import React from 'react'
+import React,{useState} from 'react'
 import book from './book.png'
+import { useContext } from 'react'
+import { PublicationContext } from '../../Context/PublicationState'
+import { Link } from 'react-router-dom'
 
-const Right = () => {
+const Right = (props) => {
+    const context=useContext(PublicationContext)
   return (
-    <div className='bg-white  w-[20%] m-2 p-3'>
+    <>
+   
+    <div className={`bg-white lg:block ${props.style} md:w-[20%] w-full md:m-2 p-3 absolute md:static top-0   transition-all duration-1000 ease-in-out delay-75`}>
     <div>
-    <h1 className='text-3xl text-left tracking-wide font-bold '>Shahnwaz Khan</h1>
+    <h1 className='text-3xl text-left tracking-wide font-bold '>{context.loggedInName}</h1>
     <p className='text-left mt-2'>Professor</p>
     </div>
 
-    <div className='text-center  bg-blue rounded-t-full  border-b-0 border-[40px] border-black border-r-indigo-300 h-36 w-64 mt-10'>
+    <div className='text-center i  bg-blue rounded-t-full  border-b-0 border-[40px] border-black border-r-indigo-300 h-36 w-64 m-auto md:mt-10'>
         <div className='mt-10'>
         <p className='text-4xl text-center font-bold'>75%</p>
         <p className='text-center text-xl '>Profile</p>
@@ -18,7 +24,7 @@ const Right = () => {
     </div>
 
     <div className='mt-24'>
-        <div className='flex justify-between'>
+        <Link to='/bookDetails'><div className='flex justify-between'>
             <div className='flex justify-start'>
             <img src={book} alt='book' className='bg-yellow-300'/>
             <div >
@@ -28,7 +34,9 @@ const Right = () => {
             </div>
             <p className='text-sm px-2 cursor-pointer hover:text-base'>View &rarr;</p>
         </div>
+        </Link>
 
+        <Link to='/journalDetails'>
         <div className='flex justify-between my-5'>
             <div className='flex justify-start'>
             <img src={book} alt='book' className='bg-green-300'/>
@@ -39,7 +47,9 @@ const Right = () => {
             </div>
             <p className='text-sm px-2 cursor-pointer hover:text-base'>View &rarr;</p>
         </div>
+        </Link>
 
+        <Link to='/conferenceDetails'>
         <div className='flex justify-between '>
             <div className='flex justify-start'>
             <img src={book} alt='book' className='bg-indigo-300'/>
@@ -50,6 +60,7 @@ const Right = () => {
             </div>
             <p className='text-sm px-2 cursor-pointer hover:text-base'>View &rarr;</p>
         </div>
+        </Link>
     </div>
 
     <div className='mt-10 border-dashed border-gray-500 border-4 rounded-xl'>
@@ -79,6 +90,7 @@ const Right = () => {
           </div>
     </div>
 </div>
+</>
   )
 }
 

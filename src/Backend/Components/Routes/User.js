@@ -40,7 +40,7 @@ router.post('/signUp', async (req, res) => {
             }
         }
         const token = jwt.sign(payLoad, secretKey);
-        return res.status(201).json({Message:"Account created successfully.",token:token,status:201});
+        return res.status(201).json({Message:"Account created successfully.",token:token,status:201,name:create.Name});
     } else return res.status(401).json({Message: "Internal server error." })
 
 })
@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(payLoad, secretKey);
     // localStorage.setItem('token', token)
-    return res.json({ Message: "Welcome to andc_treasure.", token,status:200 })
+    return res.json({ Message: "Welcome to andc_treasure.", token,status:200,name:oldPassword.Name })
 
 })
 
