@@ -18,7 +18,6 @@ import DeleteConference from "../DeletePublication/DeleteConference";
 import { Link } from "react-router-dom";
 import Successful from "../Modals/Successful";
 import Error from "../Modals/Error";
-import DetailedPublication from '../Modals/DetailedPublication'
 import TableData from "./TableData";
 // Tippy 
 import Tippy from '@tippyjs/react';
@@ -222,7 +221,6 @@ const [detailedData,setDetailedData]=useState({})
     return (
         <div className="mt-10 px-10">
             {/* <DetailedPublication/> */}
-            <DetailedPublication data={detailedData} editUrl={props.editUrl}/>
             {/* Add publication */}
             <AddBook/>
             <AddJournal/>
@@ -261,7 +259,7 @@ const [detailedData,setDetailedData]=useState({})
             <Link to='/profile'><button className='bg-[#7e22ce] text-white text-sm sm:text-base rounded-2xl py-1 sm:px-3 px-2  hover:opacity-50  mt-2' >Back</button></Link>
             </div>
            
-                <div className="flex flex-wrap" onClick={(event)=>deleteOrUpdate(event)}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-5" onClick={(event)=>deleteOrUpdate(event)}>
                 {element}
                 </div>
            

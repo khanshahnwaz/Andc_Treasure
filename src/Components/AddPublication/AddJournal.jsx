@@ -326,9 +326,9 @@ useEffect(() => {
                    </Tippy>
                     <br/><br/>
 
-                   <div className='grid grid-cols-2 gap-x-2 w-[70%]'>
-                   <button type='button' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 my-2 px-5 rounded ' onClick={()=>setSection(0)}>Back</button>
-                    <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 my-2 px-5 rounded '>Submit</button>
+                   <div className='grid grid-cols-2 gap-x-2 '>
+                   <button type='button' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 my-2 px-5 rounded w-full' onClick={()=>setSection(0)}>Back</button>
+                    <button type='submit' className=' font-bold float-left cursor-pointer bg-[#7e22c3] text-white py-2 my-2 px-5 rounded w-full'>Submit</button>
                     </div> 
                     </form>
                     

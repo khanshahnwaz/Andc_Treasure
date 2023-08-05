@@ -1,5 +1,6 @@
 const publicationType=require('../Collections/PublicationType/PublicationType')
 const bookPublication=require('../Collections/Book/BookPublication')
+const faculty=require('../Collections/User')
 const app=require('express')
 const router=app.Router();
 const checkUser=require('../LoginMiddleware/checkUser')
@@ -151,5 +152,37 @@ router.delete('/deleteBook',checkUser,async(req,res)=>{
         return res.json(err)
     }
     return res.json({"Message":"Book deleted successfully.","Status":200})
+})
+
+
+// Read all with faculty information to display in admin page
+router.get('/admin/readBooks',checkUser ,async (req,res)=>{
+    // const PID=await publicationType.find({Type:'BOOK'})
+    try{
+    const data=await bookPublication.find().populate(['FID','PID'])
+    const result=data.map((item,i)=>{
+          return {
+            Name:item.FID.Name,
+            Email:item.FID.Email,
+            Phone:item.FID.Phone,
+            Department:item.FID.Department,
+            Designation:item.FID.Designation,
+            BookName:item.PID.Name,
+            Year:item.PID.Year.getFullYear(),
+            Publisher:item.PID.Publisher,
+            ISBN:item.PID.ISPN,
+            BookTitle:item.Title,
+            Editor:item.Editor,
+            Area:item.Area,
+            CoAuthors:item.CoAuthors,
+            Edition:item.Edition
+          }
+    })
+    return res.json(result)
+    // return res.send(await JSON.stringify(result))
+
+    }catch(err){
+        return res.json(err)
+    }
 })
 module.exports=router;

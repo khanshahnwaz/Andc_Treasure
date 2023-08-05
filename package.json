@@ -1,6 +1,6 @@
 {
   "name": "andc_treasure",
-  "homepage": "https://github.com/khanshahnwaz/Andc_Treasure",
+  "homepage": "https://khanshahnwaz.github.io/Andc_Treasure",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,6 +13,7 @@
     "formik": "^2.2.9",
     "nodemailer": "^6.8.0",
     "react": "^18.2.0",
+    "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-icons-kit": "^2.0.0",
@@ -27,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "predeploy": "npm run build",
-   "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

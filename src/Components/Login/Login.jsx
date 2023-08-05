@@ -72,7 +72,7 @@ const Login=()=>{
             if(result.status===200){
                 localStorage.setItem('token',result.token)
                 context.setSuccessMessage(result.Message)
-                context.setLoggedInName(result.name)
+                localStorage.setItem('data',JSON.stringify(result.data))
             }else {
                 context.setErrorMessage(result.Message)
             }

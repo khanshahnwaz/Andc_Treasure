@@ -40,7 +40,14 @@ router.post('/signUp', async (req, res) => {
             }
         }
         const token = jwt.sign(payLoad, secretKey);
-        return res.status(201).json({Message:"Account created successfully.",token:token,status:201,name:create.Name});
+        const userData={
+            name:create.Name,
+            email:create.Email,
+            phone:create.Phone,
+            department:create.Department,
+            designation:create.Designation,
+        }
+        return res.status(201).json({Message:"Account created successfully.",token:token,status:201,data:userData});
     } else return res.status(401).json({Message: "Internal server error." })
 
 })
@@ -67,10 +74,16 @@ router.post('/login', async (req, res) => {
         }
     }
 
-
+    const userData={
+        name:oldPassword.Name,
+        email:oldPassword.Email,
+        phone:oldPassword.Phone,
+        department:oldPassword.Department,
+        designation:oldPassword.Designation,
+    }
     const token = jwt.sign(payLoad, secretKey);
     // localStorage.setItem('token', token)
-    return res.json({ Message: "Welcome to andc_treasure.", token,status:200,name:oldPassword.Name })
+    return res.json({ Message: "Welcome to andc_treasure.", token,status:200,data:userData})
 
 })
 

@@ -45,12 +45,27 @@ const PublicationState = (props) => {
 
 
     // state to enable or disable the detailed card of the publication
-    const[callDetailedPublication,setCallDetailedPublication]=useState(false);
+    const[detailedPublication,setDetailedPublication]=useState(false);
     // state to hold the data that will upate the existing publication
     // doing this because I want to send the request only after confirmation of user
     const [editData, setEditData] = useState({})
+
+
+    // now I need to maintain three hooks that keep track of which publication is clicked to view in detailed format.
+    const[bookIndex,setBookIndex]=useState();
+    const[chapterIndex,setChapterIndex]=useState();
+    const[journalIndex,setJournalIndex]=useState();
+    const[conferenceIndex,setConferenceIndex]=useState();
     return (
         <PublicationContext.Provider value={{
+            bookIndex:bookIndex,
+            setBookIndex:setBookIndex,
+            chapterIndex:chapterIndex,
+            setChapterIndex:setChapterIndex,
+            journalIndex:journalIndex,
+            setJournalIndex:setJournalIndex,
+            conferenceIndex:conferenceIndex,
+            setConferenceIndex:setConferenceIndex,
             loggedInName:loggedInName,
             setLoggedInName:setLoggedInName,
              warningMessage: warningMessage, setWarningMessage: setWarningMessage, targetId: targetId, setTargetId: setTargetId, goAhead: goAhead, setGoAhead: setGoAhead,
@@ -77,7 +92,7 @@ const PublicationState = (props) => {
                     addJournal: addJournal,
                      setAddJournal: setAddJournal, 
                      addConference: addConference,
-                      setAddConference: setAddConference,callDetailedPublication:callDetailedPublication,setCallDetailedPublication:setCallDetailedPublication }}>
+                      setAddConference: setAddConference,detailedPublication:detailedPublication,setDetailedPublication:setDetailedPublication }}>
             {props.children}
         </PublicationContext.Provider>
     )

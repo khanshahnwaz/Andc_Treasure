@@ -54,7 +54,8 @@ const Confirmtion = (props) => {
         else if(props.message=='logOut'){
 
             localStorage.removeItem('token')
-            context.setLoggedInName('Andc_Treasure')
+            localStorage.removeItem('data')
+            // context.setLoggedInName('Andc_Treasure')
             navigation()
         }
 // case 3: User is trying to delete any publication

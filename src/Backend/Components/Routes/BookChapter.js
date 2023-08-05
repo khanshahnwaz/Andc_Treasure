@@ -162,4 +162,35 @@ router.delete('/deleteChapter', checkUser, async (req, res) => {
     }
     return res.json({ "Message": "Chapter deleted successfully.","Status":200 })
 })
+
+// Read all with faculty information to display in admin page
+router.get('/admin/readChapters',checkUser ,async (req,res)=>{
+    // const PID=await publicationType.find({Type:'BOOK'})
+    try{
+    const data=await bookChapter.find().populate(['FID','PID'])
+    // return res.json(data)
+    const result=data.map((item,i)=>{
+          return {
+            Name:item.FID.Name,
+            Email:item.FID.Email,
+            Phone:item.FID.Phone,
+            Department:item.FID.Department,
+            Designation:item.FID.Designation,
+            BookName:item.PID.Name,
+            Year:item.PID.Year.getFullYear(),
+            Publisher:item.PID.Publisher,
+            ISBN:item.PID.ISPN,
+            BookTitle:item.BookTitle,
+            ChapterTitle:item.ChapterTitle,
+            Editor:item.Editor,
+            Area:item.Area,
+            Edition:item.Edition
+          }
+    })
+    return res.json(result)
+
+    }catch(err){
+        return res.json(err)
+    }
+})
 module.exports = router;

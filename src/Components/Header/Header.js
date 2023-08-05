@@ -28,7 +28,7 @@ const Header = () => {
       <Confirmtion message='logOut' url='/'/>
       <div className='flex justify-start md:space-x-7 '>
         <img alt="Home" className='hidden' src={home} />
-        <h1 className='text-[#7e22ce] text-2xl font-bold'>{context.loggedInName}</h1>
+        <h1 className='text-[#7e22ce] text-2xl font-bold'>{localStorage.getItem('token')?JSON.parse(localStorage.getItem('data')).name:'Andc_Treasure'}</h1>
       </div>
       <div className='flex justify-end flex-grow '>
         <ul className='font-xl flex  sm:space-x-5 gap-2   sm:pr-0'>

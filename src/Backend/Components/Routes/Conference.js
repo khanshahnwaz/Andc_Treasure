@@ -2,7 +2,8 @@ const publicationType = require('../Collections/PublicationType/PublicationType'
 const conference = require('../Collections/Conference/ConferencePublication')
 const app = require('express')
 const router = app.Router();
-const checkUser = require('../LoginMiddleware/checkUser')
+const checkUser = require('../LoginMiddleware/checkUser');
+const conferencePublication = require('../Collections/Conference/ConferencePublication');
 
 // CREATE Conference
 router.post('/addConference', checkUser, async (req, res) => {
@@ -158,5 +159,38 @@ router.delete('/deleteConference', checkUser, async (req, res) => {
         return res.json({"Message":"Internal Server Error!"})
     }
     return res.json({ "Message": "Conference deleted successfully.", "Status": 200 })
+})
+
+// Read all with faculty information to display in admin page
+router.get('/admin/readConferences',checkUser ,async (req,res)=>{
+    // const PID=await publicationType.find({Type:'BOOK'})
+    try{
+    const data=await conferencePublication.find().populate(['FID','PID'])
+    // return res.json(data)
+    const result=data.map((item,i)=>{
+          return {
+            Name:item.FID.Name,
+            Email:item.FID.Email,
+            Phone:item.FID.Phone,
+            Department:item.FID.Department,
+            Designation:item.FID.Designation,
+            ConferenceName:item.PID.Name,
+            Year:item.PID.Year.getFullYear(),
+            Publisher:item.PID.Publisher,
+            ISSN:item.PID.ISPN,
+            PaperTitle:item.PaperTitle,
+            National:item.National,
+            Presented:item.PaperPresented,
+            Place:item.Place,
+            CorrespondingAuthor:item.CorrespondingAuthor,
+            FirstAuthor:item.FirstAuthor,
+            CoAuthors:item.CoAuthors
+          }
+    })
+    return res.json(result)
+
+    }catch(err){
+        return res.json(err)
+    }
 })
 module.exports = router;

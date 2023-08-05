@@ -2,7 +2,8 @@ const publicationType=require('../Collections/PublicationType/PublicationType')
 const journal=require('../Collections/Journal/JournalPublication')
 const app=require('express')
 const router=app.Router();
-const checkUser=require('../LoginMiddleware/checkUser')
+const checkUser=require('../LoginMiddleware/checkUser');
+const journalPublication = require('../Collections/Journal/JournalPublication');
 
 // CREATE journal
 router.post('/addJournal',checkUser,async(req,res)=>{
@@ -159,5 +160,37 @@ router.delete('/deleteJournal',checkUser,async(req,res)=>{
         return res.json({"Message":"Internal server error."})
     }
     return res.json({"Message":"Journal deleted successfully.","Status":200})
+})
+
+
+// Read all with faculty information to display in admin page
+router.get('/admin/readJournals',checkUser ,async (req,res)=>{
+    // const PID=await publicationType.find({Type:'BOOK'})
+    try{
+    const data=await journalPublication.find().populate(['FID','PID'])
+    // return res.json(data)
+    const result=data.map((item,i)=>{
+          return {
+            Name:item.FID.Name,
+            Email:item.FID.Email,
+            Phone:item.FID.Phone,
+            Department:item.FID.Department,
+            Designation:item.FID.Designation,
+            JournalName:item.PID.Name,
+            Year:item.PID.Year.getFullYear(),
+            Publisher:item.PID.Publisher,
+            ISSN:item.PID.ISPN,
+            JournalTitle:item.Title,
+            Volume:item.Volume,
+            CorrespondingAuthor:item.CorrespondingAuthor,
+            FirstAuthor:item.FirstAuthor,
+            CoAuthors:item.CoAuthors
+          }
+    })
+    return res.json(result)
+
+    }catch(err){
+        return res.json(err)
+    }
 })
 module.exports=router;

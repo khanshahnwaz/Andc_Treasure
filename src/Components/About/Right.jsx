@@ -9,10 +9,10 @@ const Right = (props) => {
   return (
     <>
    
-    <div className={`bg-white lg:block ${props.style} md:w-[20%] w-full md:m-2 p-3 absolute md:static top-0   transition-all duration-1000 ease-in-out delay-75`}>
+    <div className={`bg-white  ${props.style} md:opacity-100 md:w-[20%] w-full md:m-2 p-3  md:static top-0   transition-all duration-1000 ease-in-out delay-75`}>
     <div>
-    <h1 className='text-3xl text-left tracking-wide font-bold '>{context.loggedInName}</h1>
-    <p className='text-left mt-2'>Professor</p>
+    <h1 className='text-3xl text-left tracking-wide font-bold '>{JSON.parse(localStorage.getItem('data')).name}</h1>
+    <p className='text-left mt-2'>{localStorage.getItem('designation')}</p>
     </div>
 
     <div className='text-center i  bg-blue rounded-t-full  border-b-0 border-[40px] border-black border-r-indigo-300 h-36 w-64 m-auto md:mt-10'>
@@ -66,25 +66,25 @@ const Right = (props) => {
     <div className='mt-10 border-dashed border-gray-500 border-4 rounded-xl'>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl '>
-                shahnwaz@andc.du.ac.in
+            {JSON.parse(localStorage.getItem('data')).email}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl '>
-                Professor
+            {JSON.parse(localStorage.getItem('data')).designation}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl '>
-                Computer Science
+            {JSON.parse(localStorage.getItem('data')).department}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl  '>
-                Password
+            {JSON.parse(localStorage.getItem('data')).phone}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
