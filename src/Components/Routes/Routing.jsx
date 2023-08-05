@@ -30,7 +30,7 @@ import DetailedPublication from "../Admin/DetailedPublication/DetailedPublicatio
             <Header/>      
         <Routes> 
             
-            <Route path='/' element={<Home/>}/>
+            <Route path='/home' element={<Home/>}/>
             <Route path='/signUp' element={<><SignUp/><Home/></>}/>   
             <Route path='/login' element={<><Login/><Home/></>}/>
             <Route path='/profile' element={<About/>}/>
