@@ -3,6 +3,7 @@
     import Header from '../Header/Header';
     import Footer from '../Footer/Footer';
     import {BrowserRouter as Router,Routes,Route} from "react-router-dom";
+    import { HashRouter } from "react-router-dom";
     import Login from "../Login/Login";
     import About from "../About/About";
     import Contact from "../ContactUs/Contact";
@@ -25,7 +26,7 @@ import DetailedPublication from "../Admin/DetailedPublication/DetailedPublicatio
     const routing=()=>{
         return(
             <PublicationState>
-        <Router basename={process.env.PUBLIC_URL}> 
+        <HashRouter > 
             <Header/>      
         <Routes> 
             
@@ -54,7 +55,7 @@ import DetailedPublication from "../Admin/DetailedPublication/DetailedPublicatio
         </Routes>  
         
         <Footer/>
-        </Router>
+        </HashRouter>
         </PublicationState>
         );
     }
