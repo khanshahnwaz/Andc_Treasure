@@ -25,7 +25,7 @@ import DetailedPublication from "../Admin/DetailedPublication/DetailedPublicatio
     const routing=()=>{
         return(
             <PublicationState>
-        <Router basename="/Andc_Treasure"> 
+        <Router basename={process.env.PUBLIC_URL}> 
             <Header/>      
         <Routes> 
             
