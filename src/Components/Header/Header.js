@@ -32,7 +32,7 @@ const Header = () => {
       </div>
       <div className='flex justify-end flex-grow '>
         <ul className='font-xl flex  sm:space-x-5 gap-2   sm:pr-0'>
-        <Link to='/'><li className='hidden md:block hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>Home</li></Link>
+        <Link to='/home'><li className='hidden md:block hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>Home</li></Link>
 
         
         <Link to='/contactUs'><li className='hidden md:block hover:bg-[#7e22ce] hover:text-white hover:rounded-2xl hover:py-1 hover:px-3 transition ease-in duration-700'>ContactUs</li></Link>
