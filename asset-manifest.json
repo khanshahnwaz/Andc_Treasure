@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Andc_Treasure/static/css/main.fac072a7.css",
-    "main.js": "/Andc_Treasure/static/js/main.5e5fa93e.js",
+    "main.js": "/Andc_Treasure/static/js/main.8bf6f5b2.js",
     "static/js/787.4cfc5b71.chunk.js": "/Andc_Treasure/static/js/787.4cfc5b71.chunk.js",
     "static/media/principal.jpg": "/Andc_Treasure/static/media/principal.bd2e38e7cdc435eca853.jpg",
     "static/media/user.png": "/Andc_Treasure/static/media/user.cc384a274636f5aa09ef.png",
@@ -13,11 +13,11 @@
     "static/media/slick.woff": "/Andc_Treasure/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/Andc_Treasure/index.html",
     "main.fac072a7.css.map": "/Andc_Treasure/static/css/main.fac072a7.css.map",
-    "main.5e5fa93e.js.map": "/Andc_Treasure/static/js/main.5e5fa93e.js.map",
+    "main.8bf6f5b2.js.map": "/Andc_Treasure/static/js/main.8bf6f5b2.js.map",
     "787.4cfc5b71.chunk.js.map": "/Andc_Treasure/static/js/787.4cfc5b71.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fac072a7.css",
-    "static/js/main.5e5fa93e.js"
+    "static/js/main.8bf6f5b2.js"
   ]
 }
