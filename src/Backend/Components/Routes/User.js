@@ -7,7 +7,10 @@ const jwt = require('jsonwebtoken'); // to generate tokens
 const secretKey = "This is Shahnwaz Khan";
 const {Auth}=require('two-step-auth')
 const nodemailer=require('nodemailer')
-
+const book=require('../Collections/Book/BookPublication')
+const chapter=require('../Collections/Book/BookChapter')
+const conference=require('../Collections/Conference/ConferencePublication')
+const journal=require('../Collections/Journal/JournalPublication')
 // Route 1: Register new user . Login not required
 router.post('/signUp', async (req, res) => {
     // console.log("Hi I am here.")
@@ -46,6 +49,10 @@ router.post('/signUp', async (req, res) => {
             phone:create.Phone,
             department:create.Department,
             designation:create.Designation,
+            bookLen:0,
+            chapterLen:0,
+            journalLen:0,
+            conferenceLen:0
         }
         return res.status(201).json({Message:"Account created successfully.",token:token,status:201,data:userData});
     } else return res.status(401).json({Message: "Internal server error." })
@@ -55,7 +62,7 @@ router.post('/signUp', async (req, res) => {
 
 // Router 2 : Login register user . No login required
 router.post('/login', async (req, res) => {
-
+    console.log("I am hit ");
     const { Email, Password } = req.body;
     const checkEmail = await user.findOne({ Email: Email });
     if (!checkEmail) {
@@ -73,6 +80,11 @@ router.post('/login', async (req, res) => {
             id: oldPassword._id
         }
     }
+    // find length of the publications
+    const bookLen=await book.find({FID:oldPassword._id});
+    const chapterLen=await chapter.find({FID:oldPassword._id})
+    const conferenceLen=await conference.find({FID:oldPassword._id})
+    const journalLen=await journal.find({FID:oldPassword._id})
 
     const userData={
         name:oldPassword.Name,
@@ -80,6 +92,10 @@ router.post('/login', async (req, res) => {
         phone:oldPassword.Phone,
         department:oldPassword.Department,
         designation:oldPassword.Designation,
+        bookLen:bookLen.length,
+        chapterLen:chapterLen.length,
+        conferenceLen:conferenceLen.length,
+        journalLen:journalLen.length
     }
     const token = jwt.sign(payLoad, secretKey);
     // localStorage.setItem('token', token)

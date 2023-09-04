@@ -55,6 +55,7 @@ const Confirmtion = (props) => {
 
             localStorage.removeItem('token')
             localStorage.removeItem('data')
+            context.setCurrentUser({name:'Andc_treasure'})
             // context.setLoggedInName('Andc_Treasure')
             navigation()
         }

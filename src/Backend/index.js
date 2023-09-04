@@ -13,7 +13,8 @@ app.use(express.json())
 app.use(cors())
 
 app.get('/', (req, res) => {
-    res.send("Please route to correct page.Have a Good Day.")
+    res.send("Please route to correct page.Have a Good Day. IP address is: ")
+    console.log(req.socket.remoteAddress)
 })
 // Available routes 
 app.use('/home/faculty', require('./Components/Routes/User'));

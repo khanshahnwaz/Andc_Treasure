@@ -62,7 +62,6 @@ const [detailedData,setDetailedData]=useState({})
         });
         const result = await data.json();
         console.log("Fetched data from the database is",result)
-        
         setData(result)
         // setDataKeys(result.check)
         
@@ -83,7 +82,6 @@ const [detailedData,setDetailedData]=useState({})
         if(props.name=='Books'){
             console.log("It is time to show book details ");
             return <BookCard data={item} i={i}/>
-            console.log("After book card.")
         }else if(props.name=='Chapter'){
             return <ChapterCard data={item} i={i}/>
         }else if(props.name=='Journals'){
@@ -91,39 +89,7 @@ const [detailedData,setDetailedData]=useState({})
         }else if(props.name=='Conferences'){
             return <ConferenceCard data={item} i={i}/>
         }
-    //     if(i>=baseIndex && i<=offset)
-    //     {return (
-    
-    //     <tr  className="p-2 font-semibold border-2 border-black h-10 even:bg-[#7e22ce] even:text-white" key={i}>
-    //        {console.log("This is result",Object.values(item))}
-    //        {/* {
-    //         ()=>{
-    //             let flag=false;
-    //             Object.values.item.forEach(element => {
-    //                 if(element.includes('Shah'))
-    //                    flag=true;
-                    
-                    
-    //             });
-    //             if(flag){
-    //                 console.log('Filtered data',item)
-    //             }
-    //         }
-    //        } */}
-    //       <TableData data={Object.values(item)}/>
-           
-    //         <td className="border-2 border-black">
-    //             <Tippy followCursor={true} placement="top" content='Delete'>
-    //         <img src={del} className=' hover:opacity-50 inline hover:cursor-pointer ' alt='deletePublication' name='delete'/>
-    //         </Tippy>
-    //         <Tippy followCursor={true} placement="top" content='Edit'>
-    //         <img src={edit} className='inline hover:cursor-pointer hover:opacity-50 ' alt='editPublication' name='edit'/> 
-    //         </Tippy>
-    //         {/* <img src={view} className='inline hover:cursor-pointer hover:opacity-50 px-1' alt='editPublication' name='view'/> */}
-    //         </td> 
-
-    //      </tr>
-    //    )} else return null;
+  
     })
     
 

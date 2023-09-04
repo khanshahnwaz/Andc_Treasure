@@ -48,7 +48,7 @@ const Signup2 = (props) => {
         },
         onSubmit:async values=>{
             const temp={...data,...values};
-            
+            props.setLoader(true);
           
             const response =await fetch('http://localhost:3001/home/faculty/signUp',{
                 method:'POST',
@@ -57,11 +57,14 @@ const Signup2 = (props) => {
                   },
                 body:JSON.stringify(temp)
             })
+            props.setLoader(false);
             const result=await response.json();
             console.log(result.Message)
             // result.status===200?localStorage.setItem({token:result.token}):null
             if(result.status===201){
+                context.setCurrentUser(result.data)
                 localStorage.setItem('token',result.token)
+                localStorage.setItem('data',JSON.stringify(result.data))
                 context.setSuccessMessage(result.Message)
                 context.setLoggedInName(result.name)
             }else{
@@ -87,8 +90,7 @@ const Signup2 = (props) => {
     },[form])
   return (
     <>
-    <Error url='/signUp'/>
-        <Successful url='/'/>
+    
     <form onSubmit={form.handleSubmit}>
     <div className='wrapperDiv grid gap-3'>
             <div>

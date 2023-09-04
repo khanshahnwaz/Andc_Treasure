@@ -10,6 +10,8 @@ import {FiUser} from "react-icons/fi";
 
 const About=()=>{
     const [style,setStyle]=useState('opacity-0')
+
+    
     return (
         <>
         <ResNav/>
@@ -23,7 +25,8 @@ const About=()=>{
        
         {/* second box  */}
         <PublicationSlider/>
-        <Center/>
+        <Center
+        />
         {/* Right box  */}
        <Right style={style}/>
        </div> 

@@ -22,7 +22,6 @@ import ShowcaseJournals from '../Admin/ShowcaseJournals/ShowcaseJournals';
 import ShowcaseConferences from '../Admin/ShowcaseConferences/ShowcaseConferences';
 
 import DetailedPublication from "../Admin/DetailedPublication/DetailedPublication";
-
     const routing=()=>{
         return(
             <PublicationState>

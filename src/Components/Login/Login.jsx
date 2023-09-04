@@ -8,9 +8,10 @@ import Successful from "../Modals/Successful";
 
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import Loader from "../Loader/Loader";
 const Login=()=>{
     const context=useContext(PublicationContext);
-    
+    const[loader,setLoader]=useState(false);
     const navigate=useNavigate();
     const navigateToHome=()=>{
         navigate('/');
@@ -52,12 +53,14 @@ const Login=()=>{
             return errors;
         },
         onSubmit: async values=>{
+            console.log("submitted data in login form ",values)
             const data={
                 
                 Email:values.email,
                
                 Password:values.password
             }
+            setLoader(true);
             // console.log("sent data",JSON.stringify(data))
             const response =await fetch('http://localhost:3001/home/faculty/login',{
                 method:'POST',
@@ -66,12 +69,15 @@ const Login=()=>{
                   },
                 body:JSON.stringify(data)
             })
+            setLoader(false);
             const result=await response.json();
+            
             console.log(result.Message)
             // result.status===200?localStorage.setItem({token:result.token}):null
             if(result.status===200){
                 localStorage.setItem('token',result.token)
                 context.setSuccessMessage(result.Message)
+                context.setCurrentUser(result.data)
                 localStorage.setItem('data',JSON.stringify(result.data))
             }else {
                 context.setErrorMessage(result.Message)
@@ -97,20 +103,22 @@ const Login=()=>{
     
     <div id='container'  className="flex fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-40  bg-white rounded-lg shadow-2xl p-10 md:w-[50%] w-[92%] "> 
     <img src={remove} alt='remove' className='float-right fixed -traslate-x-1/2 -translate-y-1/2 -right-1 -top-2 hover:opacity-10 cursor-pointer' onClick={navigateToHome}/>
+    <Loader loader={loader}/>
+
         {/* left division */}
-        <div className="h-max bg-gradient-to-br from-[#7e22ce] to-[#a26bcd]  border-white rounded-lg shadow-lg w-[350px] hidden md:block ">
+        <div className="h-max bg-gradient-to-br from-[#7e22ce] to-[#a26bcd]  border-white rounded-lg shadow-lg w-[350px] hidden lg:block ">
             <p className="text-left text-base font-bold text-white pl-10 mt-4">Andc_Treasure</p>
             <p className="text-4xl tracking-wider text-left mt-10 p-10 text-white font-bold">Resume your <br/> journey with us</p>
             <p className="text-sm mt-2 text-left px-10 text-gray-200">Discover world best community of freelancers and business owners.</p>
             <div className=" mt-44  py-5 px-5 pb-4 mx-10 bg-[#5c1e7e] text-base font-bold  text-left text-gray-200 h-32 rounded-lg shadow-lg">Simply unbelievable! I am absolutely satisfied with my business. This is absolutely wonderful.</div>
         </div>
         {/* right division */}
-        <div className="bg-white h-full w-[100%] md:w-[50%] ">
-            <div className='mt-5 p-5 md:p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Login</p>
+        <div className="bg-white h-full w-[100%] lg:w-[50%] ">
+            <div className='mt-5 p-5 lg:p-10 mb-0'><p className='text-left text-4xl font-bold tracking-wide text-[#7e22ce]'>Login</p>
             <p className='mt-2 text-sm tracking-wide text-left font-semibold'>Don't have an account?<Link to='/signUp'><span className="text-[#7e22c3]">Register</span></Link></p>
             
             </div>
-            <div className='-mt-8 md:p-10 p-5 '>
+            <div className='-mt-8 lg:p-10 p-5 '>
                 {/* Form section  */}
                
                 <form onSubmit={formik.handleSubmit}>

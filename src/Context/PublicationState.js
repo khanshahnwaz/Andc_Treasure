@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 const PublicationContext = createContext();
 const PublicationState = (props) => {
 
@@ -56,8 +56,21 @@ const PublicationState = (props) => {
     const[chapterIndex,setChapterIndex]=useState();
     const[journalIndex,setJournalIndex]=useState();
     const[conferenceIndex,setConferenceIndex]=useState();
+
+    // hook to maintain data of loggedIn user
+    const[currentUser,setCurrentUser]=useState({});
+    useEffect(()=>{
+        if(localStorage.getItem('data'))
+           setCurrentUser(JSON.parse(localStorage.getItem('data')))
+        else setCurrentUser({name:"Andc_treasure"})
+    },[])
+
+
+    
     return (
         <PublicationContext.Provider value={{
+            currentUser:currentUser,
+            setCurrentUser:setCurrentUser,
             bookIndex:bookIndex,
             setBookIndex:setBookIndex,
             chapterIndex:chapterIndex,
