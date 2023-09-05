@@ -7,10 +7,11 @@ import PublicationSlider from '../PublicationSlider/PublicationSlider';
 import ResNav from './ResNav';
 import { useState } from 'react';
 import {FiUser} from "react-icons/fi";
+import Setting from '../Settings/Setting';
 
 const About=()=>{
     const [style,setStyle]=useState('opacity-0')
-
+    const[openSetting,setOpenSetting]=useState(false);
     
     return (
         <>
@@ -21,12 +22,13 @@ const About=()=>{
        <div className="border-8 border-black rounded-xl md:m-2 md:flex w-full  absolute top-20 md:static">
         {/* left box  */}
         
-        <Left/>
+        <Left setOpenSetting={setOpenSetting} openSetting={openSetting}/>
        
         {/* second box  */}
         <PublicationSlider/>
-        <Center
-        />
+        {openSetting?<Setting openSetting={openSetting} setOpenSetting={setOpenSetting}/>:<Center
+        />}
+        
         {/* Right box  */}
        <Right style={style}/>
        </div> 

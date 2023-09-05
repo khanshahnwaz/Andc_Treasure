@@ -2,7 +2,8 @@ import React from 'react'
 import tri from './tri.png'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { Link } from 'react-router-dom';
-const Left = () => {
+const Left = (props) => {
+  const{openSetting,setOpenSetting}=props;
   return (
     <>
     
@@ -13,7 +14,7 @@ const Left = () => {
                 <li className="py-2 hover:border-gray-400 hover:border-2 hover:text-white w-32 mt-2 rounded-lg px-2">Recents</li>
                 <li className="py-2 hover:border-gray-400 hover:border-2 hover:text-white w-32 mt-2 rounded-lg px-2">Recycle bin</li>
                 <li className="py-2 hover:border-gray-400 hover:border-2 hover:text-white w-32 mt-2 rounded-lg px-2">Contacts</li>
-                <li className="py-2 hover:border-gray-400 hover:border-2 hover:text-white w-32 mt-2 rounded-lg px-2">Setting</li>
+                <li className="py-2 hover:border-gray-400 hover:border-2 hover:text-white w-32 mt-2 rounded-lg px-2" onClick={()=>setOpenSetting(!openSetting)}>Setting</li>
                 <Link to='/contactUs'><li className="py-2 hover:border-gray-400 hover:border-2 hover:text-white w-32 mt-2 rounded-lg px-2">Contact Us</li></Link>
 
             </ul>

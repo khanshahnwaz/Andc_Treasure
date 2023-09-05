@@ -38,7 +38,7 @@ const Right = (props) => {
         <Link to='/chapterDetails'>
         <div className='flex justify-between '>
             <div className='flex justify-start'>
-            <img src={book} alt='book' className='bg-indigo-300'/>
+            <img src={book} alt='book' className='bg-red-300'/>
             <div >
                 <h3 className='text-xl font-semibold mx-1 align-center'>Chapters</h3>
                 <p className='text-sm mx-1 text-left'>{context.currentUser.chapterLen} files</p>
@@ -77,25 +77,25 @@ const Right = (props) => {
     <div className=' border-dashed border-gray-500 border-4 rounded-xl h-full flex flex-col justify-around'>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl '>
-            {JSON.parse(localStorage.getItem('data')).email}
+            {context.currentUser.email}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl '>
-            {JSON.parse(localStorage.getItem('data')).designation}
+            {context.currentUser.designation}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl '>
-            {JSON.parse(localStorage.getItem('data')).department}
+            {context.currentUser.department}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
           <div className='flex justify-between hover:border-2 border-gray-300'>
             <p className='text-xl  '>
-            {JSON.parse(localStorage.getItem('data')).phone}
+            {context.currentUser.phone}
             </p>
             <p className='text-sm hover:text-gray-400 cursor-pointer'>Edit &rarr;</p>
           </div>
