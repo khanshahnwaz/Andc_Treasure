@@ -4,7 +4,7 @@ import fb from './fb.png'
 import twit from './twit.png'
 const Footer = () => {
   return (
-    <div className='flex inset-x-0 bottom-0 md:static absolute'>
+    <div className='flex inset-x-0 bottom-0 static'>
     <div className='flex justify-start space-x-3 p-4 text-center items-center '>
         <h2 className='text-[#7e22c3] sm:text-2xl text-xl tracking-wide font-bold '>Shahnwaz Khan</h2>
         <p className='text-center -tracking-tighter'>Copyright &#169; ShahnwazKhanProjects

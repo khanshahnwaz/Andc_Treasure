@@ -50,7 +50,7 @@ const Signup2 = (props) => {
             const temp={...data,...values};
             props.setLoader(true);
           
-            const response =await fetch('http://localhost:3001/home/faculty/signUp',{
+            const response =await fetch(`${process.env.BASE_URL}/home/faculty/signUp`,{
                 method:'POST',
                 headers:{
                     'Content-Type':"application/json"

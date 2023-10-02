@@ -50,7 +50,7 @@ const [detailedData,setDetailedData]=useState({})
             context.setAddChapter(true)
         }
     }
-    let localUrl=`http://localhost:3001/home/faculty/${props.url}`
+    let localUrl=`${process.env.BASE_URL}home/faculty/${props.url}`
     const fetchData = async () => {
         const data = await fetch(localUrl, {
             method: 'GET',

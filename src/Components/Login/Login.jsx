@@ -62,7 +62,7 @@ const Login=()=>{
             }
             setLoader(true);
             // console.log("sent data",JSON.stringify(data))
-            const response =await fetch('http://localhost:3001/home/faculty/login',{
+            const response =await fetch(`${process.env.BASE_URL}home/faculty/login`,{
                 method:'POST',
                 headers:{
                     'Content-Type':"application/json"
