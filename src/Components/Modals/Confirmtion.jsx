@@ -26,7 +26,7 @@ const Confirmtion = (props) => {
     if (props.message == "edit") {
       console.log("Now I am editing with data", context.editData);
       const response = await fetch(
-        `http://localhost:3001/home/faculty/${props.editUrl}`,
+        `${process.env.REACT_APP_BASE_URL}home/faculty/${props.editUrl}`,
         {
           method: "PUT",
           headers: {
@@ -70,7 +70,7 @@ const Confirmtion = (props) => {
       deleteData[props.pub] = context.targetPublication;
       console.log("Sending delete data is ", deleteData);
       const response = await fetch(
-        `http://localhost:3001/home/faculty/${props.delUrl}`,
+        `${process.env.REACT_APP_BASE_URL}home/faculty/${props.delUrl}`,
         {
           method: "DELETE",
           headers: {
@@ -93,7 +93,7 @@ const Confirmtion = (props) => {
     } else if (props.message == "edit profile") {
       console.log("updating user profile ");
       const response = await fetch(
-        "http://localhost:3001/home/faculty/updateUser",
+        `${process.env.REACT_APP_BASE_URL}home/faculty/updateUser`,
         {
           method: "PUT",
           headers: {

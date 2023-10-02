@@ -6,6 +6,7 @@ import Footer from './Components/Footer/Footer';
 import UserProfile from './Components/UserProfile/UserProfile';
 import Routing from './Components/Routes/Routing';
 function App() {
+  // console.log("my env",process.env.REACT_APP_BASE_URL)
   // localStorage.setItem('token','this is me')
   return (
     <div className="App">

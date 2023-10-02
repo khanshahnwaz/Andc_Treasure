@@ -142,7 +142,7 @@ const formik2=useFormik({
         //         FirstAuthor:values.FirstAuthor
         //     }
             console.log("sent data",JSON.stringify(data))
-            const response =await fetch('http://localhost:3001/home/faculty/conference/addConference',{
+            const response =await fetch(`${process.env.REACT_APP_BASE_URL}home/faculty/conference/addConference`,{
                 method:'POST',
                 headers:{
                     'Content-Type':"application/json",

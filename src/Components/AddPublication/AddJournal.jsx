@@ -121,7 +121,7 @@ const formik1=useFormik({
         //         FirstAuthor:values.FirstAuthor
         //     }
             console.log("sent data",JSON.stringify(data))
-            const response =await fetch('http://localhost:3001/home/faculty/journal/addJournal',{
+            const response =await fetch(`${process.env.REACT_APP_BASE_URL}home/faculty/journal/addJournal`,{
                 method:'POST',
                 headers:{
                     'Content-Type':"application/json",

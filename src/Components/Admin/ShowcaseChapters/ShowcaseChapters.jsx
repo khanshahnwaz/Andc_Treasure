@@ -20,7 +20,7 @@ const ShowCaseTable = (props) => {
     const[startIndex,setStartIndex]=useState(0);
     const[endIndex,setEndIndex]=useState(10);
     // fetch all the data from the database
-    const url='http://localhost:3001/home/faculty/bookChapter/admin/readChapters';
+    const url=`${process.env.REACT_APP_BASE_URL}home/faculty/bookChapter/admin/readChapters`;
    const fetchData=async ()=>{
     const data= await fetch(url,{
       method:'GET',

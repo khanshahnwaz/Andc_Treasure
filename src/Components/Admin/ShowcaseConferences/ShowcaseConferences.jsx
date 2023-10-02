@@ -19,7 +19,7 @@ const[designation,setDesignation]=useState('');
     const[startIndex,setStartIndex]=useState(0);
     const[endIndex,setEndIndex]=useState(10);
     // fetch all the data from the database
-    const url='http://localhost:3001/home/faculty/conference/admin/readConferences';
+    const url=`${process.env.REACT_APP_BASE_URL}home/faculty/conference/admin/readConferences`;
    const fetchData=async ()=>{
     const data= await fetch(url,{
       method:'GET',

@@ -132,7 +132,7 @@ const formik1=useFormik({
         //         Edition:values.Edition
         //     }
             console.log("sent data",JSON.stringify(data))
-            const response =await fetch('http://localhost:3001/home/faculty/book/addBook',{
+            const response =await fetch(`${process.env.REACT_APP_BASE_URL}home/faculty/book/addBook`,{
                 method:'POST',
                 headers:{
                     'Content-Type':"application/json",
